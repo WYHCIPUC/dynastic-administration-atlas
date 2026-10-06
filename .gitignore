@@ -1,0 +1,19 @@
+# 依赖与构建产物
+node_modules/
+.next/
+out/
+dist/
+*.tsbuildinfo
+
+# 环境与密钥（只提交 .env.example 模板）
+.env
+.env.*
+!.env.example
+
+# 本地工具状态
+.mimosa/
+
+# 日志与系统文件
+*.log
+Thumbs.db
+.DS_Store

@@ -1,0 +1,446 @@
+{
+  "schema_version": "1.0",
+  "purpose": "以职能相似度而非职级等值的方式，示范现代职位与中国古代官职的审慎映射。所有分值均为研究辅助判断，不代表法律、组织或社会地位的直接对应。",
+  "scoring": {
+    "similarity": "0至1之间的启发式职能相似度；只比较核心工作，不比较权力合法性或社会身份。",
+    "confidence": "高/中/低；由史料直接程度、时代差异和现代职位的复合性共同决定。",
+    "evidence_level": "A=制度原典或出土一手材料；B=同行评审研究；C=博物馆或政府专题解读。"
+  },
+  "source_registry": {
+    "S01": {
+      "title": "秦的东扩及其政制之变",
+      "institution": "中国社会科学网（中国社会科学报）",
+      "url": "https://www.cssn.cn/skgz/bwyc/202504/t20250402_5866405.shtml",
+      "evidence_level": "B",
+      "use": "秦郡守、郡尉分掌军政及监御史监督。"
+    },
+    "S02": {
+      "title": "汉代军械勤务考述——以西北考古资料为中心",
+      "institution": "中国国家博物馆",
+      "url": "https://www.chnmuseum.cn/yj/xscg/xslw/201812/t20181224_36339.shtml",
+      "evidence_level": "B",
+      "use": "汉代工官、武库、执金吾及军械管理。"
+    },
+    "S03": {
+      "title": "节度使",
+      "institution": "故宫博物院",
+      "url": "https://www.dpm.org.cn/lemmas/243411.html",
+      "evidence_level": "C",
+      "use": "唐节度使的军政合一及安史后地方军政权力。"
+    },
+    "S04": {
+      "title": "宋代的文官掌军制度及其效应",
+      "institution": "中国社会科学网，原载《中国社会科学》",
+      "url": "https://www.cssn.cn/dkzgxp/zgxp_zgshkx/2022nd7q/202208/t20220829_5482363.shtml",
+      "evidence_level": "B",
+      "use": "宋枢密院、三衙、发兵与统兵分离及文官掌军。"
+    },
+    "S05": {
+      "title": "卫所制度",
+      "institution": "故宫博物院",
+      "url": "https://www.dpm.org.cn/court/system/236399.html",
+      "evidence_level": "C",
+      "use": "明都司—卫—所、卫所额制及五军都督府统辖。"
+    },
+    "S06": {
+      "title": "八旗制度",
+      "institution": "故宫博物院",
+      "url": "https://www.dpm.org.cn/lemmas/241391.html",
+      "evidence_level": "C",
+      "use": "清八旗的牛录—甲喇—固山层级、兵民一体与驻防。"
+    },
+    "S07": {
+      "title": "西藏的主权归属与人权状况（元代部分）",
+      "institution": "中国人大网",
+      "url": "https://www.npc.gov.cn/WZWSREL3pncmR3L25wYy8vL3p0L3F0L3h6ZGJ0Y2Ztai8yMDA5LTAzLzE3L2NvbnRlbnRfMTQ5MzY4NC5odG0%3D",
+      "evidence_level": "C",
+      "use": "元宣政院、宣慰使司都元帅府及万户府等西藏军政机构。"
+    },
+    "S08": {
+      "title": "实证西域为中国固有领土之——汉代西域都护府",
+      "institution": "国家民委网站",
+      "url": "https://www.neac.gov.cn/seac/c103391/202211/1159739.shtml",
+      "evidence_level": "C",
+      "use": "汉西域都护府、戊己校尉与屯田体系。"
+    },
+    "S09": {
+      "title": "金朝内迁女真人猛安数量考辨",
+      "institution": "中国社会科学网",
+      "url": "https://www.cssn.cn/skgz/202209/t20220916_5511905.shtml",
+      "evidence_level": "B",
+      "use": "金猛安谋克的军政合一、军户与镇防军差异。"
+    },
+    "S10": {
+      "title": "驿站体系与清代远距离国家治理的有效实现",
+      "institution": "全国哲学社会科学工作办公室",
+      "url": "https://www.nopss.gov.cn/BIG5/n1/2020/0113/c219470-31545283.html",
+      "evidence_level": "B",
+      "use": "清理藩院、驻防体系与边疆直辖性治理转变。"
+    },
+    "S11": {
+      "title": "《明史·职官志》《清会典》相关条目",
+      "institution": "正史与会典原典",
+      "locator": "《明史》卷七十二至七十五；《钦定大清会典》吏、户、礼、刑、兵各部职掌",
+      "evidence_level": "A",
+      "use": "户部、国子监、刑部、大理寺、理藩院等制度原典。"
+    },
+    "S12": {
+      "title": "《唐六典》《新唐书·百官志》相关条目",
+      "institution": "唐代制度原典与正史",
+      "locator": "《唐六典》卷六至卷十；《新唐书·百官志》",
+      "evidence_level": "A",
+      "use": "将作监、尚药局、都督及唐代中央官署职掌。"
+    },
+    "S13": {
+      "title": "《宋史·职官志》相关条目",
+      "institution": "宋代正史原典",
+      "locator": "《宋史》卷一百六十一至一百六十七",
+      "evidence_level": "A",
+      "use": "三司使、度支使、巡检、国子监等宋代官职。"
+    },
+    "S14": {
+      "title": "《后汉书·百官志》与《汉书·百官公卿表》",
+      "institution": "汉代正史原典",
+      "locator": "《后汉书》志第二十六；《汉书》卷十九",
+      "evidence_level": "A",
+      "use": "太医令、廷尉、郡县尉及汉代官制。"
+    },
+    "S15": {
+      "title": "《清史稿·职官志》与《理藩院则例》",
+      "institution": "清代正史与会典原典",
+      "locator": "《清史稿》卷一百十四至一百二十；《理藩院则例》",
+      "evidence_level": "A",
+      "use": "提督学政、太医院、理藩院、伊犁将军等清代职掌。"
+    }
+  },
+  "examples": [
+    {
+      "modern_input": "财政厅厅长",
+      "primary": {
+        "ancient_candidate": "户部尚书（明清）",
+        "similarity": 0.68,
+        "confidence": "中",
+        "duty_difference": "户部尚书掌全国户籍、田赋、漕运和国库，财政厅厅长主要负责一省预算、收支与地方债务；前者直接对皇帝和中央财政负责，不能视为省级职位的等值翻译。",
+        "daily_activities": ["审核税赋和户籍奏报", "调度国库、漕粮或仓储", "处理地方财赋与中央之间的清册和稽核"],
+        "clothing": "品官公服或朝服，按品级佩补服/冠服；服饰是身份和礼制标志，不是财政专业标志。",
+        "life": "中央高位文官，常住京师，依俸禄、职田或赏赐生活，需参加朝会和文书审批。",
+        "risks": ["钱粮亏空和审计追责", "地方与中央财政冲突", "党争或皇帝对奏报失实的惩罚"],
+        "evidence_level": "A",
+        "source_ids": ["S11"]
+      },
+      "alternatives": [
+        {
+          "ancient_candidate": "三司使（宋）",
+          "similarity": 0.63,
+          "confidence": "中",
+          "duty_difference": "三司使统筹盐铁、度支、户部财赋，类似综合财政中枢但仍是全国机构；没有现代省级预算和人大审议关系。",
+          "daily_activities": ["核定度支和转运", "管理盐铁等专卖财源", "向皇帝报告收入和支出"],
+          "clothing": "宋代文官朝服和公服，随品级而定。",
+          "life": "京官生活，文书和会计事务密集，常与转运使及州县往来。",
+          "risks": ["冗费和军费失控", "账目失实", "与枢密院、宰执权力冲突"],
+          "evidence_level": "A",
+          "source_ids": ["S13"]
+        },
+        {
+          "ancient_candidate": "度支使（唐宋）",
+          "similarity": 0.55,
+          "confidence": "中",
+          "duty_difference": "度支使偏军国财赋、转运和支出核算，职责范围比现代财政厅更窄且高度服务于皇室和军事。",
+          "daily_activities": ["编制和核算度支", "审核转运与军粮", "处理中央财政文书"],
+          "clothing": "文官公服、朝服。",
+          "life": "中央或临时使职官员，可能因军务出使，生活受差遣影响。",
+          "risks": ["军粮短缺", "转运失误", "财政责任连坐"],
+          "evidence_level": "A",
+          "source_ids": ["S12", "S13"]
+        }
+      ]
+    },
+    {
+      "modern_input": "县公安局长",
+      "primary": {
+        "ancient_candidate": "县尉（秦汉）",
+        "similarity": 0.72,
+        "confidence": "中",
+        "duty_difference": "县尉兼掌县域治安、捕盗和军事事务，接近治安与基层武备的复合职能；没有现代刑侦、警务法定程序和独立警察编制。",
+        "daily_activities": ["巡逻、缉捕和押解", "组织县域守备与治安力量", "向县令及郡级长官报告案件和兵事"],
+        "clothing": "县级武职公服，佩印或符传；秦汉具体服色因时期和品秩变化。",
+        "life": "县署武职，日常接触乡里、狱讼和征发，面临地方治安压力。",
+        "risks": ["捕盗失职", "冤狱和滥用强制力", "战乱时的守城或征发责任"],
+        "evidence_level": "A",
+        "source_ids": ["S01", "S14"]
+      },
+      "alternatives": [
+        {
+          "ancient_candidate": "巡检（宋）",
+          "similarity": 0.60,
+          "confidence": "中",
+          "duty_difference": "巡检多负责关隘、乡村或交通线的巡逻捕盗，辖区和权限通常小于县公安局长。",
+          "daily_activities": ["巡查道路、渡口和关隘", "缉捕盗贼", "维护边界和交通秩序"],
+          "clothing": "宋代基层武职公服，可能携带兵器和印信。",
+          "life": "常驻县境外的巡检寨或关隘，生活条件较县城艰苦。",
+          "risks": ["盗贼和地方武装冲突", "失守关隘", "军民纠纷责任"],
+          "evidence_level": "A",
+          "source_ids": ["S13"]
+        },
+        {
+          "ancient_candidate": "巡检司巡检（明清）",
+          "similarity": 0.58,
+          "confidence": "中",
+          "duty_difference": "巡检司兼有治安、缉私、关津管理和海防功能，职责比现代公安更杂，且没有统一刑事警察体系。",
+          "daily_activities": ["巡逻和缉私", "检查关津、盐运或海口", "协调弓手、民壮等基层力量"],
+          "clothing": "低品级武职公服，因地区和任务配兵器。",
+          "life": "常驻交通节点或边海地区，需处理商旅和地方社会冲突。",
+          "risks": ["走私和武装冲突", "海盗或倭寇袭击", "收受贿赂的监察风险"],
+          "evidence_level": "A",
+          "source_ids": ["S11"]
+        }
+      ]
+    },
+    {
+      "modern_input": "军分区主官",
+      "primary": {
+        "ancient_candidate": "都督（魏晋南北朝至唐）",
+        "similarity": 0.67,
+        "confidence": "中",
+        "duty_difference": "都督通常统辖一个区域或若干州郡军事，部分时期兼任行政；军分区主官属于现代军队指挥链，权限、法理和军地关系均不同。",
+        "daily_activities": ["统筹区域驻军和训练", "处理边防、调兵和军报", "与地方行政长官协调军需和治安"],
+        "clothing": "朝服、武弁或军中戎服，依时期和场合变化。",
+        "life": "驻镇或随军，可能长期离京；家属和部曲、幕府关系因时期而异。",
+        "risks": ["边战和军粮不足", "中央猜忌或军镇割据", "军令与地方行政冲突"],
+        "evidence_level": "A",
+        "source_ids": ["S12"]
+      },
+      "alternatives": [
+        {
+          "ancient_candidate": "节度使（唐）",
+          "similarity": 0.55,
+          "confidence": "中",
+          "duty_difference": "节度使是边区军政长官，安史以后常兼行政、财政和监察，权力明显超出军分区主官。",
+          "daily_activities": ["统辖镇兵和边防", "筹措军粮、军械和军费", "处理辖区行政与外交事务"],
+          "clothing": "节度使朝服、戎服和仪卫并用，随出镇和朝会场合变化。",
+          "life": "长期驻外，拥有幕府和属官，政治网络及地方资源影响很大。",
+          "risks": ["边患和军队叛乱", "被中央削权或征召", "形成藩镇割据"],
+          "evidence_level": "C",
+          "source_ids": ["S03"]
+        },
+        {
+          "ancient_candidate": "总兵官（明）",
+          "similarity": 0.63,
+          "confidence": "中",
+          "duty_difference": "总兵官多为驻镇或战区统帅，通常受兵部、都督府和皇帝调遣；辖区与品秩并不固定，不能对应固定现代军衔。",
+          "daily_activities": ["指挥驻镇卫所和营兵", "巡边、训练和战备", "执行皇帝或兵部的调遣"],
+          "clothing": "武官朝服、补服或戎服，按品秩和任务穿用。",
+          "life": "长期驻镇，军营生活和边地交通条件决定日常生活。",
+          "risks": ["边战失利", "军饷和军纪责任", "被文官系统弹劾"],
+          "evidence_level": "A",
+          "source_ids": ["S05", "S11"]
+        }
+      ]
+    },
+    {
+      "modern_input": "医院负责人",
+      "primary": {
+        "ancient_candidate": "太医院院使（明清）",
+        "similarity": 0.80,
+        "confidence": "高",
+        "duty_difference": "院使主管宫廷医疗机构和医官，服务对象以皇室及高级官员为主；现代医院负责人面向公众、承担现代临床、医保和公共卫生责任。",
+        "daily_activities": ["管理医官、医学生和药材", "安排会诊、诊疗和医案呈报", "监督药品和医疗器具供应"],
+        "clothing": "文官公服或朝服，医官另有差服；服饰不等同现代医师白大褂。",
+        "life": "宫廷服务性强，出入和言论受内廷规制，生活依附于官署俸禄。",
+        "risks": ["诊疗结果和用药失误", "宫廷政治与医疗责任交织", "药材供应和账目追责"],
+        "evidence_level": "A",
+        "source_ids": ["S11", "S15"]
+      },
+      "alternatives": [
+        {
+          "ancient_candidate": "太医令（汉）",
+          "similarity": 0.68,
+          "confidence": "中",
+          "duty_difference": "太医令主管太医属官和宫廷医疗，机构规模及医学专业分工远小于现代综合医院。",
+          "daily_activities": ["管理太医和医疗供给", "为宫廷诊治", "参与医官考核和药材管理"],
+          "clothing": "汉代官员冠服，按秩级佩绶。",
+          "life": "宫廷属官，需轮值和随侍，生活受宫禁制度约束。",
+          "risks": ["皇室疾病责任", "药材或医案失误", "宫廷问责"],
+          "evidence_level": "A",
+          "source_ids": ["S14"]
+        },
+        {
+          "ancient_candidate": "尚药局奉御（唐）",
+          "similarity": 0.57,
+          "confidence": "中",
+          "duty_difference": "尚药局奉御偏重宫廷用药、药材和医官管理，而非现代医院的病区、护理和公共卫生管理。",
+          "daily_activities": ["审核和调配宫廷药物", "管理药材仓储", "监督医官和药工"],
+          "clothing": "唐代宫廷官服和公服。",
+          "life": "宫廷近侍官署生活，值班和出入限制严格。",
+          "risks": ["药物误用", "药材质量与供应责任", "宫廷政治风险"],
+          "evidence_level": "A",
+          "source_ids": ["S12"]
+        }
+      ]
+    },
+    {
+      "modern_input": "企业技术人员",
+      "primary": {
+        "ancient_candidate": "考工令（汉）",
+        "similarity": 0.47,
+        "confidence": "低",
+        "duty_difference": "考工令负责官营工场的技术标准、工匠和产品监督，最接近公共技术官而非企业研发工程师；没有现代企业竞争、知识产权和项目制。",
+        "daily_activities": ["监督器物制造和工艺标准", "核验材料、尺寸和质量", "管理工匠及生产记录"],
+        "clothing": "官署属官公服，按品秩和官署规定着装。",
+        "life": "官营工场或中央官署生活，以官俸和身份待遇为主，个人职业流动有限。",
+        "risks": ["产品质量和军械失效", "工期与材料短缺", "工匠管理和贪污追责"],
+        "evidence_level": "B",
+        "source_ids": ["S02", "S14"]
+      },
+      "alternatives": [
+        {
+          "ancient_candidate": "将作监少监（隋唐）",
+          "similarity": 0.45,
+          "confidence": "低",
+          "duty_difference": "将作监偏宫室、城池和大型工程的行政技术管理，工作对象是国家工程而非企业产品或软件。",
+          "daily_activities": ["审查工程设计和材料", "督率工匠与工程进度", "验收宫室、城防或公共设施"],
+          "clothing": "隋唐文官公服、朝服。",
+          "life": "官署与工地之间往返，受工程期限和劳役组织约束。",
+          "risks": ["工程坍塌和质量责任", "劳役与材料账目问题", "工程延误的政治问责"],
+          "evidence_level": "A",
+          "source_ids": ["S12"]
+        },
+        {
+          "ancient_candidate": "少府属官（汉）",
+          "similarity": 0.38,
+          "confidence": "低",
+          "duty_difference": "少府系统兼管皇室财用、工场和技术生产，技术岗位只是其中一部分，不能对应企业技术岗位的专业身份。",
+          "daily_activities": ["监督官营工场和器物生产", "管理材料与工匠", "向少府和皇帝报告产制"],
+          "clothing": "汉代官服，随官秩变化。",
+          "life": "服务皇室的官署生活，工作保密性和等级性较强。",
+          "risks": ["产品和军械质量责任", "皇室用度供应责任", "工场账目追责"],
+          "evidence_level": "B",
+          "source_ids": ["S02", "S14"]
+        }
+      ]
+    },
+    {
+      "modern_input": "省级教育部门负责人",
+      "primary": {
+        "ancient_candidate": "提督学政（清）",
+        "similarity": 0.71,
+        "confidence": "中",
+        "duty_difference": "学政主要主持一省学政、考试和生员管理，现代教育部门还负责基础教育、职业教育、学校财政和公共服务；学政也不是现代省政府的常设厅级行政机构。",
+        "daily_activities": ["巡考和主持院试、岁试等考试", "考核生员与地方学校", "向中央报告学额、学风和考试事务"],
+        "clothing": "文官朝服、公服和差服，出巡时有仪仗。",
+        "life": "按任期巡行各府州，生活受驿站、地方接待和考试日程支配。",
+        "risks": ["考试舞弊和取士失当", "学额与地方利益冲突", "监察和廉政问责"],
+        "evidence_level": "A",
+        "source_ids": ["S15"]
+      },
+      "alternatives": [
+        {
+          "ancient_candidate": "提学使（明）",
+          "similarity": 0.67,
+          "confidence": "中",
+          "duty_difference": "提学使负责学校、学官和生员考核，侧重科举和教化，公共教育资源配置范围小于现代教育厅。",
+          "daily_activities": ["巡按学校和书院", "考核生员、学官", "处理学籍、学额与教化事务"],
+          "clothing": "明代文官公服、朝服和出巡仪仗。",
+          "life": "多在一省巡行，任期和考核周期影响生活安排。",
+          "risks": ["考试舞弊", "学官失职", "地方士绅压力"],
+          "evidence_level": "A",
+          "source_ids": ["S11"]
+        },
+        {
+          "ancient_candidate": "国子祭酒（唐宋明清）",
+          "similarity": 0.52,
+          "confidence": "中",
+          "duty_difference": "祭酒主管中央国子监和最高学府，属于中央教育机构负责人，并非省级教育行政长官。",
+          "daily_activities": ["管理国子监课程和师生", "主持释奠、讲学和生员考核", "向中央报告学校事务"],
+          "clothing": "高品文官朝服、公服。",
+          "life": "长期居京，参与礼仪和学术活动，社会声望较高。",
+          "risks": ["学政和礼制失当", "师生管理责任", "党争与学术路线冲突"],
+          "evidence_level": "A",
+          "source_ids": ["S11", "S12", "S13"]
+        }
+      ]
+    },
+    {
+      "modern_input": "法院院长",
+      "primary": {
+        "ancient_candidate": "大理寺卿（唐至清）",
+        "similarity": 0.78,
+        "confidence": "中",
+        "duty_difference": "大理寺卿主管中央司法复核、疑狱和重大案件审理，现代法院院长还负责审判管理和司法行政；古代司法不具现代独立审判、检察分立和程序保障。",
+        "daily_activities": ["复核重大刑狱", "组织寺内官员审案和议谳", "与刑部、御史台或都察院会审"],
+        "clothing": "高品文官朝服、公服，按朝代佩绶或补服。",
+        "life": "中央司法官署生活，需参与会审、朝议和文书复核。",
+        "risks": ["冤狱与错案责任", "皇帝或宰执干预", "刑罚尺度和案件积压"],
+        "evidence_level": "A",
+        "source_ids": ["S11", "S12"]
+      },
+      "alternatives": [
+        {
+          "ancient_candidate": "廷尉（秦汉）",
+          "similarity": 0.66,
+          "confidence": "中",
+          "duty_difference": "廷尉是中央最高司法长官，兼有法律解释、审判和司法行政职能，和现代法院院长的审判管理不完全相同。",
+          "daily_activities": ["审理重大案件", "解释和执行法律", "管理廷尉属官和监狱事务"],
+          "clothing": "秦汉高品官冠服，佩印绶。",
+          "life": "中央官署生活，需参与朝廷司法议决和皇帝诏令执行。",
+          "risks": ["案件错判", "皇权压力", "法律解释与政治冲突"],
+          "evidence_level": "A",
+          "source_ids": ["S14"]
+        },
+        {
+          "ancient_candidate": "刑部尚书（明清）",
+          "similarity": 0.59,
+          "confidence": "中",
+          "duty_difference": "刑部尚书是中央司法行政和刑名审核主管，偏行政与复核，不等同法院院长的审判机关负责人。",
+          "daily_activities": ["审核刑名和大案", "管理刑部属司与地方刑狱文书", "参与三法司会审"],
+          "clothing": "高品文官朝服、补服。",
+          "life": "京官生活，文书密集，常参与朝审和秋审。",
+          "risks": ["刑狱失当", "案件积压", "地方司法与中央政策冲突"],
+          "evidence_level": "A",
+          "source_ids": ["S11", "S15"]
+        }
+      ]
+    },
+    {
+      "modern_input": "边疆事务负责人",
+      "primary": {
+        "ancient_candidate": "理藩院尚书（清）",
+        "similarity": 0.74,
+        "confidence": "中",
+        "duty_difference": "理藩院尚书处理蒙古、西藏及藩部事务，兼具族群治理、宗教事务、朝贡和边疆行政，不等同现代单一边疆事务部门或军区主官。",
+        "daily_activities": ["审核藩部奏报和封爵", "处理盟旗、寺院、朝贡与边界事务", "协调驻防将军、办事大臣和地方官"],
+        "clothing": "满汉高品文官朝服、补服，按旗籍和品级有差异。",
+        "life": "中央部院高官，通常居京，依靠驿站和文书网络处理远距离政务。",
+        "risks": ["边疆叛乱和外部冲突", "族群与宗教事务失衡", "边防军费和信息迟滞"],
+        "evidence_level": "A",
+        "source_ids": ["S10", "S15"]
+      },
+      "alternatives": [
+        {
+          "ancient_candidate": "西域都护（汉）",
+          "similarity": 0.62,
+          "confidence": "中",
+          "duty_difference": "西域都护是驻外边疆的军政长官，统护属国、屯田和军事行动，范围更偏西域军政与外交，不是中央边疆事务总负责人。",
+          "daily_activities": ["统辖西域诸国和汉军屯田", "处理使者、质子和贡赐", "部署烽燧、驻军与交通"],
+          "clothing": "汉代边郡高官冠服，出行和作战时配戎服、符节。",
+          "life": "长期驻守西域，远离中央，依赖屯田、驿传和军粮。",
+          "risks": ["补给线中断", "属国反复和边战", "中央信息延迟与问责"],
+          "evidence_level": "C",
+          "source_ids": ["S08"]
+        },
+        {
+          "ancient_candidate": "伊犁将军（清）",
+          "similarity": 0.66,
+          "confidence": "中",
+          "duty_difference": "伊犁将军是新疆驻防体系最高军政长官，军事和行政权很重，但职责集中于新疆，不能代表全国边疆事务。",
+          "daily_activities": ["统辖驻防八旗和绿营", "管理屯垦、驿站及地方军政", "处理边界、部族和外部交涉"],
+          "clothing": "清代将军朝服、补服和戎服，按旗籍与品级配饰。",
+          "life": "长期驻惠远等边城，往返天山南北，生活受边疆气候、交通和军营条件影响。",
+          "risks": ["边境战争和叛乱", "军粮与交通中断", "地方军政责任和中央考核"],
+          "evidence_level": "B",
+          "source_ids": ["S10", "S15"]
+        }
+      ]
+    }
+  ]
+}

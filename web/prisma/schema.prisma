@@ -1,0 +1,155 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+enum ContentStatus {
+  DRAFT
+  REVIEW
+  PUBLISHED
+  ARCHIVED
+}
+
+enum EvidenceLevel {
+  A
+  B
+  C
+  D
+  E
+}
+
+model Period {
+  id             String          @id @default(cuid())
+  slug           String          @unique
+  name           String
+  startYear      Int?
+  endYear        Int?
+  regimeGroup    String
+  summary        String
+  status         ContentStatus   @default(DRAFT)
+  offices        Office[]
+  claims         EvidenceClaim[]
+  createdAt      DateTime        @default(now())
+  updatedAt      DateTime        @updatedAt
+}
+
+model Office {
+  id                    String             @id @default(cuid())
+  slug                  String             @unique
+  name                  String
+  aliases               Json
+  institutionLevel      String
+  functionDomains       Json
+  legalDuties           Json
+  authorityBoundaries   Json
+  actualOperation       Json
+  appointmentAndCareer Json
+  rankOrGrade           String?
+  rankComparability     String
+  status                ContentStatus      @default(DRAFT)
+  periodId              String
+  period                Period             @relation(fields: [periodId], references: [id], onDelete: Cascade)
+  lifestyle             LifestyleProfile?
+  claims                EvidenceClaim[]
+  mappingRules          MappingRule[]
+  createdAt             DateTime           @default(now())
+  updatedAt             DateTime           @updatedAt
+  @@index([periodId, status])
+}
+
+model LifestyleProfile {
+  id                    String   @id @default(cuid())
+  officeId              String   @unique
+  office                Office   @relation(fields: [officeId], references: [id], onDelete: Cascade)
+  typicalTasks          Json
+  scheduleOrWorkCycle   Json
+  officeAndResidence   Json
+  attire                Json
+  transport             String?
+  foodAndConsumption    String?
+  salaryAndAllowances   String?
+  healthAndMedicine     String?
+  ritualsAndHolidays   String?
+  familyAndSocial      String?
+  leisure               String?
+  risks                 Json
+  uncertaintyNotes      Json
+  status                ContentStatus @default(DRAFT)
+  createdAt             DateTime @default(now())
+  updatedAt             DateTime @updatedAt
+}
+
+model Source {
+  id                  String          @id
+  title               String
+  authorOrInstitution String?
+  year                String?
+  sourceType          String
+  authorityGrade      EvidenceLevel
+  locator             String?
+  url                 String?
+  coverage            String?
+  notes               String?
+  status              ContentStatus   @default(PUBLISHED)
+  claims              EvidenceClaim[]
+  createdAt           DateTime        @default(now())
+  updatedAt           DateTime        @updatedAt
+  @@index([authorityGrade, status])
+}
+
+model EvidenceClaim {
+  id              String        @id @default(cuid())
+  entityType      String
+  claimText       String
+  citationLocator String?
+  evidenceLevel   EvidenceLevel
+  uncertaintyType String
+  status          ContentStatus @default(DRAFT)
+  periodId        String?
+  period          Period?       @relation(fields: [periodId], references: [id], onDelete: Cascade)
+  officeId        String?
+  office          Office?       @relation(fields: [officeId], references: [id], onDelete: Cascade)
+  sourceId        String
+  source          Source        @relation(fields: [sourceId], references: [id], onDelete: Restrict)
+  createdAt       DateTime      @default(now())
+  updatedAt       DateTime      @updatedAt
+  @@index([entityType, status])
+}
+
+model MappingRule {
+  id              String        @id @default(cuid())
+  keywordPatterns Json
+  functionDomains Json
+  institutionLevels Json
+  weight          Float
+  explanation     String
+  status          ContentStatus @default(PUBLISHED)
+  officeId        String
+  office          Office        @relation(fields: [officeId], references: [id], onDelete: Cascade)
+}
+
+model AdminAuditLog {
+  id             String   @id @default(cuid())
+  adminId        String
+  entityType     String
+  entityId       String
+  action         String
+  beforeSnapshot Json?
+  afterSnapshot  Json?
+  reason         String?
+  createdAt      DateTime @default(now())
+  @@index([entityType, entityId, createdAt])
+}
+
+model MatchQuery {
+  id        String   @id @default(uuid())
+  rawText   String
+  input     Json
+  result    Json
+  createdAt DateTime @default(now())
+  @@index([createdAt])
+}

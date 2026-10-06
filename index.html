@@ -1,0 +1,213 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="theme-color" content="#09191d">
+  <meta name="description" content="中国历代行政体系与现代职位穿越百科：按职能检索历史官职、制度与生活情境，并追踪史料来源。">
+  <title>历朝行政 · 职位穿越百科</title>
+  <link rel="stylesheet" href="./styles.css">
+</head>
+<body data-page="home">
+  <a class="skip-link" href="#main-content">跳到主要内容</a>
+
+  <header class="site-header" data-section="masthead">
+    <div class="shell header-inner">
+      <a class="brand" href="#top" aria-label="历朝行政首页">
+        <span class="brand-mark" aria-hidden="true">历</span>
+        <span class="brand-copy">
+          <strong>历朝行政</strong>
+          <small>职能穿越百科</small>
+        </span>
+      </a>
+
+      <nav class="primary-nav" aria-label="主导航" data-nav="primary">
+        <a class="is-active" href="#match" data-nav-item="match">职位匹配</a>
+        <a href="#systems" data-nav-item="systems">制度浏览</a>
+        <a href="#sources" data-nav-item="sources">来源与方法</a>
+        <a href="#about" data-nav-item="about">项目说明</a>
+      </nav>
+
+      <div class="header-meta">
+        <span class="status-dot" aria-hidden="true"></span>
+        <span>资料库 v0.1</span>
+      </div>
+    </div>
+  </header>
+
+  <main id="main-content">
+    <section class="hero shell" id="top" data-section="hero">
+      <div class="hero-copy">
+        <p class="eyebrow"><span class="eyebrow-line"></span>史料驱动 · 研究型检索</p>
+        <h1>如果你的职位<br><em>在古代，<br>会是什么官？</em></h1>
+        <p class="hero-intro">从现代职位出发，比较职能边界、权力资源与日常生活。每一次匹配都显示依据、差异与不确定性。</p>
+        <div class="hero-facts" aria-label="数据库概览">
+          <div><strong data-count="periods">11</strong><span>时期节点</span></div>
+          <div><strong data-count="sources">43</strong><span>来源登记</span></div>
+          <div><strong data-count="grades">4 级</strong><span>证据标记</span></div>
+        </div>
+      </div>
+
+      <div class="search-card" id="match" data-section="role-search">
+        <div class="search-card-head">
+          <div>
+            <p class="section-kicker">STEP 01 / 输入现代职位</p>
+            <h2>找到你的历史坐标</h2>
+          </div>
+          <span class="search-hint">支持自然语言</span>
+        </div>
+        <form class="role-search" data-role="search-form" autocomplete="off">
+          <label class="sr-only" for="role-input">现代职位名称</label>
+          <div class="input-wrap">
+            <span class="input-icon" aria-hidden="true">⌕</span>
+            <input id="role-input" name="role" type="search" value="省财政厅厅长" placeholder="例如：省财政厅厅长" data-role="role-input" data-action="role-search" aria-describedby="role-helper">
+            <button class="clear-button" type="button" aria-label="清空输入" data-action="clear-input">×</button>
+          </div>
+          <button class="button button-primary" type="submit" data-action="submit-search">开始匹配 <span aria-hidden="true">→</span></button>
+        </form>
+        <p class="helper-text" id="role-helper">可输入部门、层级或职能组合，例如“边疆驻防军分区主官”。</p>
+        <div class="query-chips" aria-label="示例职位" data-role="query-presets">
+          <button type="button" data-query="省财政厅厅长">省财政厅厅长</button>
+          <button type="button" data-query="边疆驻防军分区主官">边疆驻防军分区主官</button>
+          <button type="button" data-query="市教育局局长">市教育局局长</button>
+        </div>
+      </div>
+    </section>
+
+    <section class="section shell" id="candidates" data-section="candidates">
+      <div class="section-heading">
+        <div>
+          <p class="section-kicker">STEP 02 / 功能类比</p>
+          <h2>候选官职 <span class="heading-count" data-role="candidate-count">3</span></h2>
+          <p class="match-legend">匹配度＝职能相似度估计 · 置信度＝证据支撑的确定程度 · 均非品秩换算</p>
+        </div>
+        <div class="filter-group" data-role="candidate-filters" aria-label="候选官职筛选">
+          <button class="filter-button is-selected" type="button" data-filter="all">全部</button>
+          <button class="filter-button" type="button" data-filter="high-confidence">高置信度</button>
+          <button class="filter-button" type="button" data-filter="period">按时期</button>
+        </div>
+      </div>
+
+      <div class="candidate-grid" data-role="candidate-list" data-match-results aria-live="polite">
+        <article class="candidate-card is-featured" data-role="office-card" data-office-id="song-zhuanyunshi" data-period="宋" data-confidence="0.86">
+          <div class="card-topline"><span class="period-label">宋 · 转运使</span><span class="match-score">86<span>%</span></span></div>
+          <h3>转运使</h3>
+          <p class="card-subtitle">一路财赋与监察的综合枢纽</p>
+          <p class="card-description">以路为单位统筹漕运、财赋与部分监察事务，与省级财政行政存在清晰的职能交集。</p>
+          <div class="tag-row"><span class="tag tag-amber">财赋</span><span class="tag tag-blue">监察</span><span class="tag tag-muted">跨区域</span></div>
+          <div class="card-footer"><span class="evidence-label evidence-a">A</span><span>法令与会要</span><button class="text-button" type="button" data-action="select-office" data-office-id="song-zhuanyunshi">查看详情 <span aria-hidden="true">→</span></button></div>
+        </article>
+
+        <article class="candidate-card" data-role="office-card" data-office-id="tang-hubu-shilang" data-period="唐" data-confidence="0.72">
+          <div class="card-topline"><span class="period-label">唐 · 户部侍郎</span><span class="match-score">72<span>%</span></span></div>
+          <h3>户部侍郎</h3>
+          <p class="card-subtitle">中央财计部门的副贰</p>
+          <p class="card-description">参与户籍、赋税与国用核算，权责更集中于中央部寺，与现代厅局长存在层级差异。</p>
+          <div class="tag-row"><span class="tag tag-amber">财赋</span><span class="tag tag-purple">中央</span><span class="tag tag-muted">副职</span></div>
+          <div class="card-footer"><span class="evidence-label evidence-a">A</span><span>唐六典</span><button class="text-button" type="button" data-action="select-office" data-office-id="tang-hubu-shilang">查看详情 <span aria-hidden="true">→</span></button></div>
+        </article>
+
+        <article class="candidate-card" data-role="office-card" data-office-id="ming-hubu-shangshu" data-period="明" data-confidence="0.64">
+          <div class="card-topline"><span class="period-label">明 · 户部尚书</span><span class="match-score">64<span>%</span></span></div>
+          <h3>户部尚书</h3>
+          <p class="card-subtitle">全国财政事务的名义总领</p>
+          <p class="card-description">统领户部诸司，但与现代财政厅长相比拥有更强的中央集权色彩，且受内阁与皇权制约。</p>
+          <div class="tag-row"><span class="tag tag-amber">财赋</span><span class="tag tag-purple">中央</span><span class="tag tag-red">制度差异</span></div>
+          <div class="card-footer"><span class="evidence-label evidence-c">C</span><span>制度史研究</span><button class="text-button" type="button" data-action="select-office" data-office-id="ming-hubu-shangshu">查看详情 <span aria-hidden="true">→</span></button></div>
+        </article>
+      </div>
+    </section>
+
+    <section class="section shell detail-layout" id="detail" data-section="office-detail">
+      <div class="detail-main">
+        <div class="detail-header">
+          <div>
+            <p class="section-kicker">SELECTED MATCH / 选中条目</p>
+            <div class="title-with-badge"><h2 data-role="office-title">转运使</h2><span class="confidence-badge" data-role="office-confidence">置信度 86%</span></div>
+            <p class="detail-meta"><span data-role="office-period" data-match-scenario>北宋 · 淳化四年（993）</span><span class="meta-separator">/</span><span data-role="office-location">以路为辖区</span></p>
+          </div>
+          <button class="save-button" type="button" data-action="save-office"><span aria-hidden="true">☆</span> 收藏条目</button>
+        </div>
+
+        <div class="function-compare" data-role="function-compare">
+          <div class="compare-intro"><span class="compare-icon" aria-hidden="true">≈</span><div><strong>为什么像？</strong><p>掌握一路财赋，兼理漕运与监察，是省级财政统筹的前身。</p></div></div>
+          <div class="compare-intro compare-difference"><span class="compare-icon" aria-hidden="true">!</span><div><strong>哪里不同？</strong><p>辖区随“路”而变，边界和权限受中央临时差遣影响，不能直接等同现代行政区。</p></div></div>
+        </div>
+
+        <div class="detail-tabs" role="tablist" data-role="detail-tabs">
+          <button class="tab-button is-active" role="tab" aria-selected="true" data-tab="overview">职能概览</button>
+          <button class="tab-button" role="tab" aria-selected="false" data-tab="timeline">沿革时间线</button>
+          <button class="tab-button" role="tab" aria-selected="false" data-tab="evidence">证据链</button>
+        </div>
+
+        <div class="detail-panel" data-panel="overview" data-role="detail-panel">
+          <div class="metric-row" data-role="office-metrics">
+            <div class="metric"><span>核心权限</span><strong>财赋转运</strong><small>兼领监察</small></div>
+            <div class="metric"><span>对接机构</span><strong>三司 / 户部</strong><small>中央财计</small></div>
+            <div class="metric"><span>常见驻地</span><strong>州郡治所</strong><small>随路迁转</small></div>
+          </div>
+          <dl class="fact-list">
+            <div><dt>现代类比</dt><dd>省级财政厅长（职能交集）</dd></div>
+            <div><dt>汇报对象</dt><dd>三司使、枢密院或皇帝特诏</dd></div>
+            <div><dt>主要产出</dt><dd>岁额转运、仓储稽核、灾伤奏报</dd></div>
+            <div><dt>关键边界</dt><dd>不拥有现代预算独立权；临时差遣色彩明显</dd></div>
+          </dl>
+        </div>
+
+        <div class="detail-panel" data-panel="timeline" data-role="detail-panel" hidden></div>
+        <div class="detail-panel" data-panel="evidence" data-role="detail-panel" hidden></div>
+      </div>
+
+      <aside class="life-card" data-section="life-encyclopedia">
+        <div class="life-card-heading"><span class="life-icon" aria-hidden="true">☷</span><div><p class="section-kicker">STEP 03 / 穿越生活百科</p><h2>如果你今天上任</h2></div></div>
+        <div class="life-summary"><span class="scenario-label">情景重建</span><p>你将在驿路、仓场与州县之间往返，手持转运文书协调粮运、钱帛和地方官。</p></div>
+        <ul class="life-list">
+          <li><span class="life-marker">01</span><div><strong>一天的节奏</strong><p>辰时点检账籍，午前核对仓粮，午后处理州县申牒。</p></div></li>
+          <li><span class="life-marker">02</span><div><strong>随身之物</strong><p>印信、符牒、驿券与简式账册；差旅由驿传系统接续。</p></div></li>
+          <li><span class="life-marker">03</span><div><strong>你会面对</strong><p>漕运延误、灾年减免与地方豪强的多重压力。</p></div></li>
+        </ul>
+        <div class="life-footnote"><span class="evidence-label evidence-b">B</span><span>生活细节结合文书与制度推演，标为情景重建。</span></div>
+      </aside>
+    </section>
+
+    <section class="section shell systems-section" id="systems" data-section="systems-browser">
+      <div class="section-heading systems-heading">
+        <div><p class="section-kicker">STEP 04 / 制度矩阵</p><h2>沿制度脉络浏览 <span class="heading-count" data-matrix-count></span></h2></div>
+        <input class="table-search" type="search" placeholder="搜索朝代、财政、军制…" aria-label="搜索制度矩阵" data-matrix-search>
+        <a class="text-button all-link" href="#systems" data-action="view-all-systems">查看全部制度 <span aria-hidden="true">→</span></a>
+      </div>
+      <div class="period-tabs" role="tablist" data-role="period-tabs" aria-label="历史时期">
+        <button class="period-tab is-active" type="button" role="tab" aria-selected="true" data-period="all"><span>全部</span><small>11 条</small></button>
+        <button class="period-tab" type="button" role="tab" aria-selected="false" data-period="pre-qin"><span>先秦</span><small>官僚萌芽 · 2 条</small></button>
+        <button class="period-tab" type="button" role="tab" aria-selected="false" data-period="qin-han"><span>秦汉</span><small>郡县定型 · 2 条</small></button>
+        <button class="period-tab" type="button" role="tab" aria-selected="false" data-period="sui-tang"><span>隋唐</span><small>三省六部 · 2 条</small></button>
+        <button class="period-tab" type="button" role="tab" aria-selected="false" data-period="song-yuan"><span>宋元</span><small>路制展开 · 3 条</small></button>
+        <button class="period-tab" type="button" role="tab" aria-selected="false" data-period="ming-qing"><span>明清</span><small>督抚体系 · 2 条</small></button>
+      </div>
+        <div class="system-grid" data-role="system-list" data-matrix-list>
+        <article class="system-card"><div class="system-card-top"><span class="system-index">01</span><span class="evidence-label evidence-a">A</span></div><h3>财赋与转运</h3><p>从上计、均输到漕运，国家如何把地方资源接入中央。</p><div class="system-meta"><span>18 条记录</span><span>·</span><span>4 个时期</span></div></article>
+        <article class="system-card"><div class="system-card-top"><span class="system-index">02</span><span class="evidence-label evidence-c">C</span></div><h3>监察与问责</h3><p>御史、按察与巡抚如何形成多层次的纠察网络。</p><div class="system-meta"><span>23 条记录</span><span>·</span><span>5 个时期</span></div></article>
+        <article class="system-card"><div class="system-card-top"><span class="system-index">03</span><span class="evidence-label evidence-b">B</span></div><h3>边疆与军政</h3><p>都护、节度与驻防体系在不同边疆空间中的变体。</p><div class="system-meta"><span>31 条记录</span><span>·</span><span>6 个时期</span></div></article>
+      </div>
+    </section>
+
+    <section class="section shell sources-section" id="sources" data-section="sources">
+      <div class="section-heading"><div><p class="section-kicker">STEP 05 / 来源登记</p><h2>每一条判断，都能回到出处</h2></div><span class="source-count">共 <span data-source-count>43</span> 条登记</span></div>
+      <div class="source-search-row"><input class="table-search" type="search" placeholder="搜索来源、机构或关键词…" aria-label="搜索来源" data-source-search></div>
+      <div class="source-layout">
+        <div class="source-list" data-role="source-list" data-source-list>
+          <article class="source-item"><span class="source-type source-type-a">原典</span><div><h3>《宋会要辑稿·职官》</h3><p>转运使职掌、差遣与岁额条目</p></div><span class="source-code">A-001</span></article>
+          <article class="source-item"><span class="source-type source-type-b">文书</span><div><h3>敦煌、吐鲁番出土文书</h3><p>驿传、仓储与地方行政的日常记录</p></div><span class="source-code">B-014</span></article>
+          <article class="source-item"><span class="source-type source-type-c">研究</span><div><h3>《宋代地方行政制度研究》</h3><p>路制与财赋权力的现代学术解释</p></div><span class="source-code">C-042</span></article>
+        </div>
+        <aside class="evidence-legend"><h3>证据等级</h3><ul><li><span class="evidence-label evidence-a">A</span><span>当朝法令、会典、实录、档案</span></li><li><span class="evidence-label evidence-b">B</span><span>出土文书、墓志、考古材料</span></li><li><span class="evidence-label evidence-c">C</span><span>同行评审论文、学术专著</span></li><li><span class="evidence-label evidence-d">D</span><span>博物馆与公共机构整理</span></li></ul><a href="#about" class="method-link" data-action="view-method">了解完整方法说明 <span aria-hidden="true">↗</span></a></aside>
+      </div>
+    </section>
+  </main>
+
+  <footer class="site-footer" id="about" data-section="footer">
+    <div class="shell footer-inner"><div class="footer-brand"><span class="brand-mark" aria-hidden="true">历</span><span><strong>历朝行政</strong><small>一个可核验的历史职能地图</small></span></div><p>所有现代职位匹配均为职能类比，不等同于品秩换算。生活细节将明确标注证据或情景重建。</p><div class="footer-links"><a href="#sources">来源登记</a><a href="#about">方法说明</a><span>© 2026</span></div></div>
+  </footer>
+  <script src="app.js" defer></script>
+</body>
+</html>

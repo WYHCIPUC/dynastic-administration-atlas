@@ -1,0 +1,127 @@
+{
+  "schema_version": "1.0",
+  "input": {
+    "unit_name": "某省财政厅",
+    "unit_type": "省级政府",
+    "position_title": "厅长",
+    "modern_rank": "省级正职",
+    "management_scope": {
+      "jurisdiction": "一省财政预算、收支与地方债务",
+      "population": null,
+      "budget_or_assets": "省级财政预算",
+      "direct_reports": null,
+      "has_personnel_power": true,
+      "has_budget_power": true,
+      "has_justice_power": false,
+      "has_military_power": false
+    },
+    "function_domains": ["财政税收", "决策", "文书"],
+    "work_location": "省会",
+    "target_dynasty": null,
+    "target_year": null,
+    "audience": "历史制度与生活百科读者"
+  },
+  "historical_candidates": [
+    {
+      "dynasty": "明清",
+      "date_range": "1368—1911",
+      "office_name": "户部尚书",
+      "alternative_names": ["户部尚书"],
+      "institution_level": "中央",
+      "function_match": {
+        "overall_score": 0.68,
+        "domains": {"财政税收": 0.82, "决策": 0.58, "文书": 0.72},
+        "match_type": "部分对应"
+      },
+      "rank_or_grade": "明清高品文官；不可直接折算为现代省级职级",
+      "rank_comparability": "只能给职权层级",
+      "legal_duties": ["掌户籍、田赋、漕运和国库事务", "审核各地财赋奏报"],
+      "authority_boundaries": ["属于全国财政中枢，不是地方财政长官", "受皇帝、内阁或军机处及其他部院制约"],
+      "appointment_and_career": ["由皇帝任命，通常经过科举、翰林或部院历练"],
+      "actual_operation": ["通过清册、奏报、漕运和仓储文书协调中央与地方"],
+      "reform_or_crisis_context": ["明代赋役折银、清代地丁与耗羡归公改变财政运行"],
+      "frontier_or_ethnic_context": null,
+      "daily_life": {
+        "typical_tasks": ["审核赋税和户籍奏报", "调度仓储、漕粮或国库", "处理地方财赋与中央之间的清册和稽核"],
+        "schedule_or_work_cycle": ["朝会、批阅题奏、部院会商和定期奏销；具体时段随朝代和皇帝而变"],
+        "office_and_residence": ["主要居京，在部院衙署办公，居住条件受品秩、俸禄和家族资源影响"],
+        "attire": {
+          "ritual_or_court_dress": "按朝代和品秩穿朝服或礼服",
+          "official_or_public_dress": "文官公服或补服",
+          "ordinary_dress": "日常便服不能由官名直接推定",
+          "headgear_and_insignia": "冠帽、补子、佩带随朝代和品级变化",
+          "period_specific_rule": "服饰是等级与礼制标志，不是现代意义上的职业制服"
+        },
+        "transport": "京师公务依靠步行、轿舆、车马和驿传，出差时受差遣和驿站制度影响",
+        "food_and_consumption": "以官俸、禄米或职田及家庭资产供给，具体饮食须按时代、地区和身份核实",
+        "salary_and_allowances": "俸禄、禄米、职田或养廉银等制度因朝代不同，不能直接换算现代工资",
+        "rituals_religion_and_holidays": "参与朝会、祭祀、节令礼仪和休假，具体制度需查当朝会典",
+        "family_and_social_network": "官僚家庭、同年、门生、姻亲和地方籍贯影响社会网络，但不能以关系网络替代制度职责",
+        "uncertainty_notes": ["日程为典型工作周期，不是某位官员每日的逐时记录", "生活细节以制度、档案和物质材料可核部分为准"]
+      },
+      "evidence_refs": [
+        {"source_id": "S11", "evidence_level": "A", "citation_locator": "《明史·职官志》《大清会典》户部条", "claim_scope": "户部法定职掌", "quote_or_paraphrase": "掌户籍、田赋、漕运及国家财用"}
+      ],
+      "confidence": {"level": "中", "score": 0.68, "basis": ["制度原典明确", "现代职位是地方财政职能，历史候选为全国财政中枢", "存在中央—地方层级差异"]}
+    },
+    {
+      "dynasty": "宋",
+      "date_range": "960—1279",
+      "office_name": "三司使",
+      "alternative_names": ["盐铁使、度支使、户部使体系的总领"],
+      "institution_level": "中央",
+      "function_match": {
+        "overall_score": 0.63,
+        "domains": {"财政税收": 0.85, "决策": 0.54, "文书": 0.73},
+        "match_type": "部分对应"
+      },
+      "rank_or_grade": "中央使职；不可直接换算现代省级职级",
+      "rank_comparability": "只能给职权层级",
+      "legal_duties": ["统筹盐铁、度支和户部财赋"],
+      "authority_boundaries": ["管理全国财赋而非一省财政", "与中书门下、枢密院和转运使互相制约"],
+      "actual_operation": ["依靠转运使、州县和专卖机构执行"],
+      "reform_or_crisis_context": ["北宋新法和常备军扩张使财政机构不断调整"],
+      "frontier_or_ethnic_context": null,
+      "daily_life": {
+        "typical_tasks": ["核定度支和转运", "审核专卖收入", "向皇帝报告收入支出"],
+        "schedule_or_work_cycle": ["案牍、会计、奏报和部司会商为主"],
+        "office_and_residence": ["主要居京，出使或差遣时随转运和军需移动"],
+        "attire": {"ritual_or_court_dress": "宋代文官朝服", "official_or_public_dress": "文官公服", "ordinary_dress": null, "headgear_and_insignia": "随品秩", "period_specific_rule": "须查宋代舆服志"},
+        "transport": "京师及转运差遣依靠驿传和官船车马",
+        "food_and_consumption": null,
+        "salary_and_allowances": "俸禄与使职待遇随官品、差遣和任地变化",
+        "rituals_religion_and_holidays": null,
+        "family_and_social_network": null,
+        "uncertainty_notes": ["三司内部沿革频繁，须指定年份才能精确定位"]
+      },
+      "evidence_refs": [
+        {"source_id": "S13", "evidence_level": "A", "citation_locator": "《宋史·职官志》", "claim_scope": "宋三司职掌", "quote_or_paraphrase": "三司分掌盐铁、度支、户部财赋"}
+      ],
+      "confidence": {"level": "中", "score": 0.63, "basis": ["宋代财政机构有明确制度记录", "现代职位与全国财政中枢存在层级差异"]}
+    }
+  ],
+  "mapping_assessment": {
+    "primary_candidate_id_or_name": "户部尚书（明清）",
+    "analogies": ["均涉及财政收入、预算/支出审核和行政文书", "均需要协调下级机构和财政账目"],
+    "non_equivalences": ["现代财政厅是省级政府组成部门，户部尚书是全国财政中枢", "现代预算审议、公共债务和专业公务员制度不能倒推到古代官制"],
+    "uncertainties": ["同一官名在不同朝代的实际权限不同", "俸禄、服饰和日程需要具体朝代、地区和品秩"],
+    "method_notes": ["按职能、层级、辖区和权力边界匹配，不按现代职级换算品级", "生活百科只把有制度或物质证据的内容写成事实，其余标为情景重建"],
+    "confidence": {"level": "中", "score": 0.68, "basis": ["有官制原典支持", "现代岗位与候选官职的辖区层级不一致"]}
+  },
+  "sources": [
+    {"source_id": "S11", "title": "《明史·职官志》《清会典》相关条目", "author_or_institution": "正史与会典原典", "source_type": "原典法典", "publisher": null, "year_or_edition": null, "volume_or_page": "《明史》卷七十二至七十五；《钦定大清会典》户部条", "url": null, "evidence_level": "A", "bias_or_limitations": "制度条文不等于所有地区的实际运行"},
+    {"source_id": "S13", "title": "《宋史·职官志》相关条目", "author_or_institution": "宋代正史原典", "source_type": "正史政书", "publisher": null, "year_or_edition": null, "volume_or_page": "《宋史》卷一百六十一至一百六十七", "url": null, "evidence_level": "A", "bias_or_limitations": "元修正史需与宋会要、长编互证"}
+  ],
+  "evidence_level_legend": {
+    "A": "当朝法令、会典、实录、诏令、官府档案或出土简牍",
+    "B": "正史、政书、会要等传统官方编纂材料",
+    "C": "考古实物、图像和物质文化证据",
+    "D": "现代同行评审研究、国家社科基金成果和权威专著",
+    "E": "普及材料，仅作线索"
+  },
+  "confidence_legend": {
+    "高": "职责和生活细节有直接原典或档案支持，时代差异较小",
+    "中": "核心职能有制度依据，但层级或日常生活存在推定",
+    "低": "只有部分职能相似，或史料不足以支持细节"
+  }
+}

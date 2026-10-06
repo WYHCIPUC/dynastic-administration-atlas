@@ -1,0 +1,225 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "role_mapping_schema.json",
+  "title": "现代职位与中国历代官职及生活百科映射",
+  "description": "用功能匹配、时代校正和证据分级，生成现代岗位到历代官职候选及生活场景的可审计结果。该模型禁止把现代职级机械换算为古代品级。",
+  "type": "object",
+  "required": ["schema_version", "input", "historical_candidates", "mapping_assessment", "sources"],
+  "properties": {
+    "schema_version": {"type": "string", "const": "1.0"},
+    "input": {
+      "$ref": "#/$defs/modern_position_input"
+    },
+    "historical_candidates": {
+      "type": "array",
+      "minItems": 1,
+      "items": {"$ref": "#/$defs/historical_candidate"}
+    },
+    "mapping_assessment": {
+      "$ref": "#/$defs/mapping_assessment"
+    },
+    "sources": {
+      "type": "array",
+      "items": {"$ref": "#/$defs/source"}
+    },
+    "evidence_level_legend": {
+      "type": "object",
+      "description": "证据等级的固定语义，便于前端和审阅者解释输出。",
+      "properties": {
+        "A": {"type": "string"},
+        "B": {"type": "string"},
+        "C": {"type": "string"},
+        "D": {"type": "string"},
+        "E": {"type": "string"}
+      },
+      "additionalProperties": false
+    },
+    "confidence_legend": {
+      "type": "object",
+      "properties": {
+        "高": {"type": "string"},
+        "中": {"type": "string"},
+        "低": {"type": "string"}
+      },
+      "additionalProperties": false
+    },
+    "generated_at": {
+      "type": "string",
+      "format": "date-time"
+    }
+  },
+  "$defs": {
+    "modern_position_input": {
+      "type": "object",
+      "required": ["unit_name", "unit_type", "position_title", "function_domains"],
+      "properties": {
+        "unit_name": {"type": "string"},
+        "unit_type": {
+          "type": "string",
+          "enum": ["中央机关", "省级政府", "地市政府", "县级政府", "基层组织", "军队", "事业单位", "国有企业", "民营企业", "其他"]
+        },
+        "position_title": {"type": "string"},
+        "modern_rank": {"type": ["string", "null"]},
+        "management_scope": {
+          "type": "object",
+          "properties": {
+            "jurisdiction": {"type": ["string", "null"]},
+            "population": {"type": ["number", "null"]},
+            "budget_or_assets": {"type": ["string", "number", "null"]},
+            "direct_reports": {"type": ["integer", "null"], "minimum": 0},
+            "has_personnel_power": {"type": "boolean"},
+            "has_budget_power": {"type": "boolean"},
+            "has_justice_power": {"type": "boolean"},
+            "has_military_power": {"type": "boolean"}
+          },
+          "additionalProperties": false
+        },
+        "function_domains": {
+          "type": "array",
+          "items": {
+            "type": "string",
+            "enum": ["决策", "文书", "民政户籍", "财政税收", "司法", "监察", "军务", "教育", "礼仪宗教", "工程交通", "外交", "边疆", "生产经营", "治安", "其他"]
+          },
+          "uniqueItems": true
+        },
+        "work_location": {"type": ["string", "null"]},
+        "target_dynasty": {"type": ["string", "null"]},
+        "target_year": {"type": ["integer", "null"]},
+        "audience": {"type": ["string", "null"]}
+      },
+      "additionalProperties": false
+    },
+    "function_match": {
+      "type": "object",
+      "required": ["overall_score", "domains"],
+      "properties": {
+        "overall_score": {"type": "number", "minimum": 0, "maximum": 1},
+        "domains": {
+          "type": "object",
+          "additionalProperties": {
+            "type": "number",
+            "minimum": 0,
+            "maximum": 1
+          }
+        },
+        "match_type": {
+          "type": "string",
+          "enum": ["功能近似", "部分对应", "弱对应", "不可比"]
+        }
+      },
+      "additionalProperties": false
+    },
+    "historical_candidate": {
+      "type": "object",
+      "required": ["dynasty", "date_range", "office_name", "institution_level", "function_match", "confidence"],
+      "properties": {
+        "dynasty": {"type": "string"},
+        "date_range": {"type": "string"},
+        "target_year_note": {"type": ["string", "null"]},
+        "office_name": {"type": "string"},
+        "alternative_names": {"type": "array", "items": {"type": "string"}},
+        "institution_level": {
+          "type": "string",
+          "enum": ["君主/宫廷", "中央", "区域/道/路/省", "府州", "县", "乡里/基层", "军镇", "边疆专门机构", "社会组织"]
+        },
+        "function_match": {"$ref": "#/$defs/function_match"},
+        "rank_or_grade": {"type": ["string", "null"]},
+        "rank_comparability": {
+          "type": "string",
+          "enum": ["可给大致区间", "只能给职权层级", "不可直接换算"]
+        },
+        "legal_duties": {"type": "array", "items": {"type": "string"}},
+        "authority_boundaries": {"type": "array", "items": {"type": "string"}},
+        "appointment_and_career": {"type": "array", "items": {"type": "string"}},
+        "actual_operation": {"type": "array", "items": {"type": "string"}},
+        "reform_or_crisis_context": {"type": "array", "items": {"type": "string"}},
+        "frontier_or_ethnic_context": {"type": ["string", "null"]},
+        "daily_life": {"$ref": "#/$defs/daily_life"},
+        "evidence_refs": {"type": "array", "items": {"$ref": "#/$defs/evidence_ref"}},
+        "confidence": {"$ref": "#/$defs/confidence"}
+      },
+      "additionalProperties": false
+    },
+    "daily_life": {
+      "type": "object",
+      "properties": {
+        "typical_tasks": {"type": "array", "items": {"type": "string"}},
+        "schedule_or_work_cycle": {"type": "array", "items": {"type": "string"}},
+        "office_and_residence": {"type": "array", "items": {"type": "string"}},
+        "attire": {
+          "type": "object",
+          "properties": {
+            "ritual_or_court_dress": {"type": ["string", "null"]},
+            "official_or_public_dress": {"type": ["string", "null"]},
+            "ordinary_dress": {"type": ["string", "null"]},
+            "headgear_and_insignia": {"type": ["string", "null"]},
+            "period_specific_rule": {"type": ["string", "null"]}
+          },
+          "additionalProperties": false
+        },
+        "transport": {"type": ["string", "null"]},
+        "food_and_consumption": {"type": ["string", "null"]},
+        "salary_and_allowances": {"type": ["string", "null"]},
+        "rituals_religion_and_holidays": {"type": ["string", "null"]},
+        "family_and_social_network": {"type": ["string", "null"]},
+        "uncertainty_notes": {"type": "array", "items": {"type": "string"}}
+      },
+      "additionalProperties": false
+    },
+    "mapping_assessment": {
+      "type": "object",
+      "required": ["primary_candidate_id_or_name", "analogies", "non_equivalences", "uncertainties", "method_notes"],
+      "properties": {
+        "primary_candidate_id_or_name": {"type": "string"},
+        "analogies": {"type": "array", "items": {"type": "string"}},
+        "non_equivalences": {"type": "array", "items": {"type": "string"}},
+        "uncertainties": {"type": "array", "items": {"type": "string"}},
+        "method_notes": {"type": "array", "items": {"type": "string"}},
+        "confidence": {"$ref": "#/$defs/confidence"}
+      },
+      "additionalProperties": false
+    },
+    "confidence": {
+      "type": "object",
+      "required": ["level", "score", "basis"],
+      "properties": {
+        "level": {"type": "string", "enum": ["高", "中", "低"]},
+        "score": {"type": "number", "minimum": 0, "maximum": 1},
+        "basis": {"type": "array", "items": {"type": "string"}}
+      },
+      "additionalProperties": false
+    },
+    "evidence_ref": {
+      "type": "object",
+      "required": ["source_id", "evidence_level", "claim_scope"],
+      "properties": {
+        "source_id": {"type": "string"},
+        "evidence_level": {"type": "string", "enum": ["A", "B", "C", "D", "E"]},
+        "citation_locator": {"type": ["string", "null"]},
+        "claim_scope": {"type": "string"},
+        "quote_or_paraphrase": {"type": ["string", "null"]}
+      },
+      "additionalProperties": false
+    },
+    "source": {
+      "type": "object",
+      "required": ["source_id", "title", "source_type", "evidence_level"],
+      "properties": {
+        "source_id": {"type": "string"},
+        "title": {"type": "string"},
+        "author_or_institution": {"type": ["string", "null"]},
+        "source_type": {
+          "type": "string",
+          "enum": ["原典法典", "正史政书", "档案简牍", "考古实物", "官方研究", "学术专著", "核心期刊", "博物馆资料", "数据库", "普及资料"]
+        },
+        "publisher": {"type": ["string", "null"]},
+        "year_or_edition": {"type": ["string", "null"]},
+        "volume_or_page": {"type": ["string", "null"]},
+        "url": {"type": ["string", "null"], "format": "uri"},
+        "evidence_level": {"type": "string", "enum": ["A", "B", "C", "D", "E"]},
+        "bias_or_limitations": {"type": ["string", "null"]}
+      },
+      "additionalProperties": false
+    }
+  }
+}
