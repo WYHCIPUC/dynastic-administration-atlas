@@ -373,7 +373,7 @@
     return candidates.slice(0, 3);
   }
 
-  function renderCandidate(candidate, index) {
+  function renderCandidate(candidate, index, sharedEvidence) {
     var activities = candidate.daily_activities.length
       ? '<ul>' + candidate.daily_activities.map(function (item) { return '<li>' + escapeHtml(item) + '</li>'; }).join('') + '</ul>'
       : '<p class="muted">暂无日常活动资料。</p>';
@@ -381,24 +381,28 @@
       ? '<ul>' + candidate.risks.map(function (item) { return '<li>风险：' + escapeHtml(item) + '</li>'; }).join('') + '</ul>'
       : '<p class="muted">暂无风险条目。</p>';
     var era = dynastyOf(candidate);
-    var bareName = toText(candidate.ancient_candidate).replace(/\s*[（(][^）)]*[）)]\s*$/, '').trim();
     var sourceText = candidate.source_ids.length ? candidate.source_ids.join(' · ') : '待补充来源';
     var sourceControl = candidate.source_ids.length
-      ? '<button class="source-jump" type="button" data-action="jump-source" data-source-ids="' + escapeHtml(candidate.source_ids.join(',')) + '" title="跳转到来源登记并定位">' + escapeHtml(sourceText) + ' · 查看来源</button>'
-      : '<span class="muted">' + escapeHtml(sourceText) + '</span>';
+      ? '<button class="source-jump" type="button" data-action="jump-source" data-source-ids="' + escapeHtml(candidate.source_ids.join(',')) + '" title="跳转到来源登记并定位">来源 ' + escapeHtml(sourceText) + '</button>'
+      : '<span class="muted">来源待补充</span>';
+    var pct = Math.round(candidate.similarity * 100);
+    var tier = pct >= 85 ? 'high' : (pct >= 70 ? 'mid' : 'low');
+    var tagRow = sharedEvidence ? '' :
+      '<div class="tag-row"><span class="tag tag-evidence evidence-' + evidenceKey(candidate.evidence_level) + '">' + escapeHtml(candidate.evidence_level) + '级证据</span><span class="tag tag-muted">置信度 ' + escapeHtml(candidate.confidence) + '</span></div>';
     return '<article class="candidate-card ' + (index === 0 ? 'is-featured' : '') + '" data-candidate-index="' + index + '">' +
-      '<div class="card-topline"><span class="period-label">' + escapeHtml(era ? era + ' · ' : '') + escapeHtml(bareName) + '</span><span class="match-score" title="职能匹配度（检索相关性）">' + Math.round(candidate.similarity * 100) + '<span>%</span></span></div>' +
+      '<div class="card-topline"><span class="period-label">' + escapeHtml(era || '功能类比') + '</span><span class="topline-right"><span class="conf-chip" title="证据支撑的确定程度">置信度 ' + escapeHtml(candidate.confidence) + '</span><span class="match-score match-tier-' + tier + '" title="职能匹配度（检索相关性）">' + pct + '<span>%</span></span></span></div>' +
+      '<div class="match-bar match-bar-' + tier + '" aria-hidden="true"><span style="width:' + pct + '%"></span></div>' +
       '<h3>' + escapeHtml(candidate.ancient_candidate) + '</h3>' +
       '<p class="card-subtitle">' + (index === 0 ? '主候选 · ' : '备选 · ') + '功能类比</p>' +
       '<p class="card-description">' + escapeHtml(candidate.duty_difference) + '</p>' +
-      '<div class="tag-row"><span class="tag tag-amber">' + escapeHtml(candidate.evidence_level) + '级证据</span><span class="tag tag-muted">置信度 ' + escapeHtml(candidate.confidence) + '</span></div>' +
+      tagRow +
       '<details class="detail-box" data-candidate-details><summary>展开职责、日常与生活百科</summary>' +
         '<div class="detail-section"><strong>日常活动</strong>' + activities + '</div>' +
         '<p><strong>服饰：</strong>' + escapeHtml(candidate.clothing) + '</p>' +
         '<p><strong>生活：</strong>' + escapeHtml(candidate.life) + '</p>' +
         '<div class="detail-section"><strong>风险</strong>' + risks + '</div>' +
       '</details>' +
-      '<div class="card-footer">' + sourceControl + '<button class="text-button" type="button" data-action="select-office" data-candidate-index="' + index + '">查看详情 →</button></div>' +
+      '<div class="card-footer"><button class="detail-cta" type="button" data-action="select-office" data-candidate-index="' + index + '">查看详情 →</button>' + sourceControl + '</div>' +
     '</article>';
   }
 
@@ -422,11 +426,19 @@
 
   function renderCandidates() {
     var list = filterCandidates();
+    var shared = list.length > 1 &&
+      list.every(function (c) { return c.evidence_level === list[0].evidence_level; }) &&
+      list.every(function (c) { return c.confidence === list[0].confidence; });
+    var noteHtml = shared
+      ? '<p class="shared-evidence-note">本组候选均为 ' + escapeHtml(list[0].evidence_level) + ' 级证据 · 置信度 ' + escapeHtml(list[0].confidence) + '：证据支撑相同，差异体现在职能范围与时代背景，请结合“查看详情”判断。</p>'
+      : '';
     findAll(['[data-match-results]', '[data-results]', '[data-role="candidate-list"]']).forEach(function (container) {
       if (state.loading) {
         renderEmpty(container, '正在加载资料…');
       } else if (list.length) {
-        container.innerHTML = '<div class="result-grid">' + list.map(renderCandidate).join('') + '</div>';
+        container.innerHTML = noteHtml + '<div class="result-grid">' + list.map(function (candidate, index) {
+          return renderCandidate(candidate, index, shared);
+        }).join('') + '</div>';
       } else if (!state.candidates.length) {
         renderEmpty(container, state.query ? '没有找到相近的历史职官，请换一个职能描述。' : '输入职位开始探索。');
       } else {
@@ -527,6 +539,13 @@
     if (!candidate) return;
     setText(findAll(['[data-role="office-title"]']), candidate.ancient_candidate);
     setText(findAll(['[data-role="office-confidence"]']), '匹配度 ' + Math.round(candidate.similarity * 100) + '% · 置信度 ' + candidate.confidence);
+    var detailMain = first(['.detail-main']);
+    if (detailMain) {
+      var detailPct = Math.round(candidate.similarity * 100);
+      var detailTier = detailPct >= 85 ? 'high' : (detailPct >= 70 ? 'mid' : 'low');
+      detailMain.classList.remove('tier-high', 'tier-mid', 'tier-low');
+      detailMain.classList.add('tier-' + detailTier);
+    }
     setText(findAll(['[data-role="function-compare"] .compare-intro:first-child p']), candidate.duty_difference);
     var difference = candidate.risks.length
       ? '主要风险：' + candidate.risks[0] + '。此外，历史官职的辖区、制度身份与权力来源各有时代差异，不能直接等同现代编制或职级。'
@@ -563,7 +582,7 @@
       }).join('');
     }
     var footnote = first(['[data-section="life-encyclopedia"] .life-footnote span:last-child']);
-    if (footnote) footnote.textContent = '服饰、生活与日程均按证据等级展示；' + (candidate.source_ids.join('、') || '关联来源待补充') + ' 为关联来源。';
+    if (footnote) footnote.textContent = '服饰与生活细节为情景推演，主要依据来源 ' + (candidate.source_ids.join('、') || '待补充') + '；非原典直载。';
 
     renderTimeline(candidate);
     renderEvidence(candidate);
@@ -598,6 +617,15 @@
     });
   }
 
+  function excerptAtSentence(text, limit) {
+    var t = toText(text);
+    if (t.length <= limit) return t;
+    var cut = t.slice(0, limit);
+    var i = cut.lastIndexOf('。');
+    if (i > limit * 0.5) return cut.slice(0, i + 1) + '……';
+    return cut + '……';
+  }
+
   function uniqueByContent(rows) {
     var seen = {};
     return rows.filter(function (row) {
@@ -619,11 +647,18 @@
       var visible = rows.slice(0, state.matrixLimit);
       var html = visible.map(function (row, index) {
         var sources = toText(row.source_ids).split(';').filter(Boolean).join(' · ');
+        var codes = toText(row.source_ids).split(';').filter(Boolean);
+        var codeButtons = codes.length
+          ? codes.map(function (code) {
+              return '<button class="source-jump source-jump--dark" type="button" data-action="jump-source" data-source-ids="' + escapeHtml(code) + '" title="在来源登记中定位 ' + escapeHtml(code) + '">' + escapeHtml(code) + '</button>';
+            }).join('<span class="code-sep"> · </span>')
+          : '待补充';
+        var excerpt = excerptAtSentence(row.legal_structure, 110);
         return '<article class="system-card" data-matrix-index="' + index + '">' +
-          '<span class="dimension">证据 ' + escapeHtml(row.evidence_grade || '未分级') + ' · ' + escapeHtml(sources || '待补充') + '</span>' +
+          '<span class="dimension">' + codeButtons + '</span>' +
           '<h3>' + escapeHtml(row.period || row.regime || '未标时期') + '</h3>' +
-          '<p><strong>制度：</strong>' + escapeHtml(row.legal_structure || '') + '</p>' +
-          '<details data-matrix-details><summary>展开本条全文（制度、运行、改革与来源）</summary>' +
+          '<p><strong>制度：</strong>' + escapeHtml(excerpt) + '</p>' +
+          '<details data-matrix-details><summary>展开全文</summary>' +
           '<p><strong>制度：</strong>' + escapeHtml(row.legal_structure || '') + '</p>' +
           '<p><strong>实际运行：</strong>' + escapeHtml(row.actual_operation || '') + '</p>' +
           '<p><strong>改革与风险：</strong>' + escapeHtml(row.reforms_risks || '') + '</p>' +
@@ -635,6 +670,14 @@
         html += '<div class="load-more-row"><button class="load-more" type="button" data-action="load-more-matrix">显示更多 · 还有 ' + (rows.length - visible.length) + ' 条</button></div>';
       }
       container.innerHTML = html;
+      var endText = '';
+      if (rows.length && rows.length <= visible.length) {
+        var totalUnique = state.matrixTotalUnique || rows.length;
+        endText = !state.matrixQuery && !state.matrixPeriods
+          ? '制度矩阵共收录 ' + rows.length + ' 个时期条目，至此呈现完毕；证据分级与来源编码可在下方“来源登记”中逐条核验。'
+          : '当前筛选出 ' + rows.length + ' 条；点击“全部”或清除搜索可查看全部 ' + totalUnique + ' 条。';
+      }
+      setText(findAll(['[data-matrix-endnote]']), endText);
     });
   }
 
@@ -676,9 +719,24 @@
     });
   }
 
+  function updateGradeStats() {
+    var counts = {};
+    state.sources.forEach(function (source) {
+      var grade = toText(source.authority_grade).trim().charAt(0).toUpperCase();
+      if (/[ABCD]/.test(grade)) counts[grade] = (counts[grade] || 0) + 1;
+    });
+    var box = first(['[data-grade-stats]']);
+    if (!box) return;
+    box.innerHTML = ['A', 'B', 'C', 'D'].map(function (grade) {
+      if (!counts[grade]) return '';
+      return '<p class="grade-stat"><span class="evidence-label evidence-' + grade.toLowerCase() + '">' + grade + '</span><span>' + counts[grade] + ' 条登记 · 主分级</span></p>';
+    }).join('');
+  }
+
   function updateCounts() {
     var periods = {};
     state.matrix.forEach(function (row) { periods[toText(row.period)] = 1; });
+    state.matrixTotalUnique = uniqueByContent(state.matrix).length;
     setText(findAll(['[data-count="periods"]']), String(Object.keys(periods).length));
     setText(findAll(['[data-count="sources"]']), String(state.sources.length));
     var letters = {};
@@ -687,6 +745,7 @@
       if (/[ABCDE]/.test(ch)) letters[ch] = 1;
     });
     setText(findAll(['[data-count="grades"]']), Object.keys(letters).length + ' 级');
+    updateGradeStats();
   }
 
   function runMatch(value) {
