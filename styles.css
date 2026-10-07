@@ -802,3 +802,47 @@ section[id], [id="match"] { scroll-margin-top: 96px; }
 
 /* 来源描述字号 */
 .candidate-meta { font-size: 11px; }
+
+/* --------------------------------------------------------------------------
+   Round 5 · 盲评遗留三项：按钮语言统一、金标签对比度、移动端触控目标
+   -------------------------------------------------------------------------- */
+/* ① 按钮统一为两档：主操作=朱砂实色近直角；次操作=纸/浅底 4px 方角；行内=朱砂文字链 */
+.button-primary { border-radius: 4px; }
+.load-more { border-radius: 4px; }
+.source-jump { color: var(--red); border-bottom-color: rgba(180, 79, 66, .45); }
+.source-jump:hover { color: #7e332b; border-bottom-color: #7e332b; }
+.save-button:hover { color: var(--red); }
+.text-button.all-link { border-bottom: 1px solid rgba(180, 79, 66, .35); }
+
+/* ② 金/赭标签压米白底：文字加深至对比 ≥4.5 */
+.confidence-badge { color: #6d4c1e; }
+.evidence-legend li { color: #55503f; }
+.search-hint { color: #6b4d22; }
+
+/* ③ 移动端触控目标：行内与小按钮最小 32px 可点高度 */
+@media (max-width: 760px) {
+  .query-chips button { min-height: 34px; padding: 6px 12px; }
+  .filter-button { min-height: 34px; }
+  .load-more { min-height: 38px; }
+  .text-button, .save-button, .source-jump { min-height: 32px; align-items: center; display: inline-flex; }
+  .tab-button { min-height: 36px; display: inline-flex; align-items: center; }
+}
+
+/* --------------------------------------------------------------------------
+   Round 6 · 盲评 8.6 遗留：深色区卡片区分度、小标签字号、出处可读性
+   -------------------------------------------------------------------------- */
+/* 深色制度展区：卡片与底色拉开亮度差（.06→.10），边框同步提亮 */
+.system-card { background: rgba(246, 239, 226, .1); border-color: rgba(205, 166, 106, .3); }
+.system-card:hover { background: rgba(246, 239, 226, .14); border-color: rgba(205, 166, 106, .55); }
+
+/* 候选卡朝代标签：加大一档并加粗（对比已足，提字号） */
+.period-label { font-size: 12px; font-weight: 600; letter-spacing: .05em; }
+
+/* 出处与说明小字：提到 11px 规范下限 */
+.candidate-meta { font-size: 11px; }
+.source-item .muted { font-size: 11px; }
+.source-code { font-size: 11px; }
+.chain-item p { font-size: 11px; }
+.chain-note { font-size: 11px; }
+.life-footnote { font-size: 11px; }
+.evidence-legend li { font-size: 11px; }
