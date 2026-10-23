@@ -1,5 +1,6 @@
 'use client';
 
+import Link from 'next/link';
 import { useEffect, useState } from 'react';
 import { useRouter } from 'next/navigation';
 import { adminFetch } from '@/components/admin/admin-api';
@@ -64,7 +65,7 @@ export default function AdminPage() {
   }, [authenticated]);
 
   if (authenticated === null) return <main className="admin-shell"><div className="admin-card">正在验证管理员会话…</div></main>;
-  if (!authenticated) return <main className="admin-shell"><div className="admin-card"><div className="eyebrow">Administrator access</div><h1>需要登录</h1><p>公开研究内容无需登录；编辑、审核、发布和回滚操作需要管理员会话。</p><a className="primary-button back-link" href="/admin/login">前往登录</a><a className="back-link" href="/">← 返回公开研究站</a></div></main>;
+  if (!authenticated) return <main className="admin-shell"><div className="admin-card"><div className="eyebrow">Administrator access</div><h1>需要登录</h1><p>公开研究内容无需登录；编辑、审核、发布和回滚操作需要管理员会话。</p><Link className="primary-button back-link" href="/admin/login">前往登录</Link><Link className="back-link" href="/">← 返回公开研究站</Link></div></main>;
 
   async function logout() {
     await fetch('/api/admin/logout', { method: 'POST' });
@@ -94,7 +95,7 @@ export default function AdminPage() {
           })}
         </div>
         <button className="primary-button" onClick={() => { void logout(); }}>退出登录</button>
-        <a className="back-link" href="/">← 返回公开研究站</a>
+        <Link className="back-link" href="/">← 返回公开研究站</Link>
       </div>
     </main>
   );

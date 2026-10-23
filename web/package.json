@@ -7,7 +7,8 @@
     "build": "next build",
     "postbuild": "node scripts/copy-static.mjs",
     "start": "node .next/standalone/server.js",
-    "lint": "tsc --noEmit",
+    "lint": "eslint .",
+    "typecheck": "tsc --noEmit",
     "db:generate": "prisma generate",
     "db:migrate": "prisma migrate dev",
     "db:seed": "tsx prisma/seed.ts",
@@ -26,6 +27,8 @@
     "@types/node": "^22.15.0",
     "@types/react": "^19.1.2",
     "@types/react-dom": "^19.1.2",
+    "eslint": "^9.39.5",
+    "eslint-config-next": "^16.4.2",
     "prisma": "^6.16.2",
     "tsx": "^4.19.4",
     "typescript": "^5.8.3"

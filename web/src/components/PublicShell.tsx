@@ -1,3 +1,4 @@
+import Link from 'next/link';
 import type { ReactNode } from 'react';
 
 const NAV = [
@@ -12,7 +13,7 @@ export default function PublicShell({ active, children }: { active?: string; chi
   return (
     <div className="site-shell">
       <header className="topbar">
-        <a className="brand" href="/"><span className="brand-mark">史</span><span><span className="brand-title">历代行政</span><span className="brand-caption">制度 · 官职 · 生活百科</span></span></a>
+        <Link className="brand" href="/"><span className="brand-mark">史</span><span><span className="brand-title">历代行政</span><span className="brand-caption">制度 · 官职 · 生活百科</span></span></Link>
         <nav className="nav">
           {NAV.map((item) => <a key={item.key} href={item.href} aria-current={active === item.key ? 'page' : undefined}>{item.label}</a>)}
         </nav>

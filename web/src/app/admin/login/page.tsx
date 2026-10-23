@@ -1,5 +1,6 @@
 'use client';
 
+import Link from 'next/link';
 import { useState } from 'react';
 
 export default function AdminLoginPage() {
@@ -13,5 +14,5 @@ export default function AdminLoginPage() {
     if (response.ok) window.location.href = '/admin'; else setError(data.error ?? '登录失败');
     setBusy(false);
   }
-  return <main className="admin-shell"><form className="admin-card" onSubmit={submit}><div className="eyebrow">Administrator access</div><h1>进入内容后台</h1><p>管理员密码使用 Argon2id 校验，会话写入 HttpOnly Cookie。公开端不需要登录。</p><label>管理员邮箱<input type="email" name="email" placeholder="admin@example.com" required /></label><label>密码<input type="password" name="password" required /></label>{error && <div className="error" role="alert">{error}</div>}<button className="primary-button" type="submit" disabled={busy}>{busy ? '验证中…' : '登录'}</button><a className="back-link" href="/">← 返回公开研究站</a></form></main>;
+  return <main className="admin-shell"><form className="admin-card" onSubmit={submit}><div className="eyebrow">Administrator access</div><h1>进入内容后台</h1><p>管理员密码使用 Argon2id 校验，会话写入 HttpOnly Cookie。公开端不需要登录。</p><label>管理员邮箱<input type="email" name="email" placeholder="admin@example.com" required /></label><label>密码<input type="password" name="password" required /></label>{error && <div className="error" role="alert">{error}</div>}<button className="primary-button" type="submit" disabled={busy}>{busy ? '验证中…' : '登录'}</button><Link className="back-link" href="/">← 返回公开研究站</Link></form></main>;
 }
