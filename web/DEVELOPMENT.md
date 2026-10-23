@@ -26,9 +26,9 @@ npm run dev
 - 公共页面：`/`、`/match`、`/match/:queryId`、`/periods`、`/periods/:periodSlug`、`/offices/:officeSlug`、`/sources`、`/about`。
 - 管理页面：`/admin/login`、`/admin`，以及时期、官职、生活、来源、主张和版本资源页。
 - 公开接口：`POST /api/matching/preview`、`GET /api/matching/:queryId`、`GET /api/periods`、`GET /api/periods/:slug`、`GET /api/offices/:slug`、`GET /api/sources`、`GET /api/health`。
-- 管理接口：时期、官职、来源、主张的创建/编辑接口，以及统一的 `submit-review`、`publish`、`archive`、`rollback` 状态接口。
+- 管理接口：时期、官职、来源、主张的创建/编辑接口，以及统一的 `submit-review`、`publish`、`archive`、`rollback` 状态接口。只读查询接口：`GET /api/admin/{periods|offices|sources|claims|lifestyle}` 列表（`limit`/`offset` 分页并返回 `total`）、`GET /api/admin/audit` 审计日志（最新在前）、`GET /api/admin/overview` 各类内容状态分布计数。
 
-管理登录使用 Argon2id 哈希；会话为 HttpOnly、Secure（生产环境）Cookie；状态变更要求 CSRF Token，并写入 `AdminAuditLog`。内容状态严格使用 `DRAFT → REVIEW → PUBLISHED → ARCHIVED`，公开研究端只读取已发布数据。
+管理登录使用 Argon2id 哈希；会话为 HttpOnly、Secure（生产环境）Cookie；写操作要求 CSRF Token（GET/HEAD 只读请求仅校验会话、豁免 CSRF），并写入 `AdminAuditLog`。内容状态严格使用 `DRAFT → REVIEW → PUBLISHED → ARCHIVED`，公开研究端只读取已发布数据。
 
 ## 内容导入
 
