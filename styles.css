@@ -351,16 +351,6 @@ body::before {
   box-shadow: 0 12px 35px rgba(5, 17, 19, .14);
 }
 
-.site-header::before {
-  position: absolute;
-  top: 0;
-  right: 0;
-  left: 0;
-  height: 2px;
-  content: "";
-  background: linear-gradient(90deg, transparent, var(--gold), var(--red), transparent);
-  opacity: .9;
-}
 
 .header-inner { gap: 47px; }
 .brand { color: #f6efe2; }
@@ -846,3 +836,596 @@ section[id], [id="match"] { scroll-margin-top: 96px; }
 .chain-note { font-size: 11px; }
 .life-footnote { font-size: 11px; }
 .evidence-legend li { font-size: 11px; }
+
+/* --------------------------------------------------------------------------
+   Round 5 · 比较可视化与语义收敛
+   -------------------------------------------------------------------------- */
+/* 匹配度：统一刻度条 + 档位分色 */
+.match-bar { height: 3px; margin: 9px 0 4px; overflow: hidden; background: rgba(23, 39, 43, .12); border-radius: 2px; }
+.match-bar span { display: block; height: 100%; background: linear-gradient(90deg, var(--gold), var(--red)); border-radius: 2px; }
+.match-tier-high { color: var(--red); }
+.match-tier-mid, .match-tier-low { color: #8a6425; }
+
+/* 证据徽章与来源图例同色系 */
+.tag-evidence { font-weight: 600; border-color: rgba(0, 0, 0, .06); }
+.shared-evidence-note { margin: 0 0 16px; padding: 11px 15px; color: var(--ink-soft); background: rgba(248, 244, 235, .8); border-left: 3px solid var(--gold); border-radius: 0 4px 4px 0; font-size: 12px; line-height: 1.7; }
+
+/* 矩阵卡 S 码就地解码 */
+.source-jump--dark { color: var(--gold-soft); font-size: 10px; border-bottom-color: rgba(205, 166, 106, .5); }
+.source-jump--dark:hover { color: #fff8e8; border-bottom-color: rgba(255, 248, 232, .7); }
+.code-sep { color: rgba(205, 166, 106, .55); }
+.system-card--end { display: flex; flex-direction: column; justify-content: center; background: rgba(246, 239, 226, .03); border-style: dashed; }
+.system-card--end p { display: block; overflow: visible; color: rgba(235, 226, 211, .75); font-size: 12px; -webkit-line-clamp: unset; }
+
+/* 朱红只留主操作：朝代元信息改赭石，链接收敛墨绿 */
+.period-label { color: #8a6425; }
+.source-title-link:hover { color: var(--blue-deep); border-bottom-color: rgba(14, 46, 51, .45); }
+.source-item a, .chain-item a { color: var(--blue-deep); border-bottom-color: rgba(14, 46, 51, .35); }
+.source-item a:hover, .chain-item a:hover { color: #07242a; border-bottom-color: #07242a; }
+
+/* 窄屏：统计数字移到输入卡之后，留出呼吸 */
+@media (max-width: 1000px) {
+  .hero-facts { margin-top: 30px; }
+}
+
+/* --------------------------------------------------------------------------
+   Round 6 · 毫米级收口
+   -------------------------------------------------------------------------- */
+/* 刻度条加高 + 85/70 阈值记号 + 档位填充 */
+.match-bar { height: 8px; position: relative; border-radius: 3px; background: rgba(23, 39, 43, .1); }
+.match-bar::before, .match-bar::after { position: absolute; top: -2px; bottom: -2px; width: 1px; content: ""; background: rgba(23, 39, 43, .28); }
+.match-bar::before { left: 70%; }
+.match-bar::after { left: 85%; }
+.match-bar span { border-radius: 3px 0 0 3px; }
+.match-bar-mid span, .match-bar-low span { background: linear-gradient(90deg, #c9a45c, #9a7328); }
+.tier-chip { color: var(--ink-soft); }
+.tier-chip::before { display: inline-block; width: 8px; height: 8px; margin-right: 5px; content: ""; background: var(--red); border-radius: 2px; }
+.tier-chip.tier-mid::before { background: #9a7328; }
+
+/* 查看详情升为主按钮，来源降为次链接 */
+.detail-cta { display: inline-flex; align-items: center; padding: 8px 16px; color: #8a3b31; background: transparent; border: 1px solid rgba(138, 59, 49, .45); border-radius: 3px; font-size: 12px; font-weight: 600; letter-spacing: .03em; transition: background .2s ease, color .2s ease, border-color .2s ease; }
+.detail-cta:hover { color: #fff8ed; background: #8a3b31; border-color: #8a3b31; }
+.detail-cta:focus-visible { outline: 3px solid rgba(180, 79, 66, .32); outline-offset: 2px; }
+
+/* 候选卡内展开框弱化为文字级 */
+.candidate-card .detail-box { margin-top: 16px; background: transparent; border: 0; border-top: 1px dashed rgba(176, 122, 55, .4); border-radius: 0; }
+.candidate-card .detail-box > summary { padding: 9px 0 9px 22px; color: var(--ink-soft); font-weight: 400; }
+.candidate-card .detail-box > summary::before { left: 4px; }
+.candidate-card .detail-box[open] > summary { border-bottom: 1px dashed rgba(176, 122, 55, .3); }
+.candidate-card .detail-box[open] > *:not(summary) { padding-left: 22px; padding-right: 4px; }
+
+/* 矩阵卡：标题限两行、边框提亮、按钮锚底 */
+.system-card { display: flex; flex-direction: column; border-color: rgba(205, 166, 106, .34); }
+.system-card h3 { display: -webkit-box; overflow: hidden; -webkit-line-clamp: 2; -webkit-box-orient: vertical; }
+.matrix-endnote { margin: 18px 0 0; color: rgba(235, 226, 211, .65); font-size: 11px; letter-spacing: .03em; text-align: center; }
+.matrix-endnote:empty { display: none; }
+
+/* 详情右侧深卡自适应高度，不再拉出空置色块 */
+.detail-layout { align-items: start; }
+
+/* 来源外链外指符与描述可读性 */
+.source-title-link::after { color: var(--ink-faint); content: " ↗"; font-family: var(--sans); font-size: 11px; }
+.candidate-meta { color: #857c6b; }
+
+/* --------------------------------------------------------------------------
+   Round 7 · 置信度视觉编码 + 图例组件化 + 矩阵降噪
+   -------------------------------------------------------------------------- */
+.topline-right { display: inline-flex; align-items: center; gap: 10px; }
+.conf-chip { padding: 3px 8px; color: var(--ink-soft); background: rgba(248, 244, 235, .85); border: 1px solid rgba(23, 39, 43, .16); border-radius: 3px; font-size: 11px; }
+
+.legend-row { display: flex; flex-wrap: wrap; align-items: baseline; justify-content: space-between; gap: 8px 20px; margin-top: 8px; }
+.tier-legend { display: inline-flex; flex: 0 0 auto; gap: 14px; }
+.tier-chip { color: var(--ink-soft); font-size: 12px; }
+.tier-chip::before { width: 12px; height: 12px; margin-right: 6px; border-radius: 3px; }
+
+.matrix-note { margin: 10px 0 0; color: rgba(235, 226, 211, .6); font-size: 11px; letter-spacing: .02em; }
+
+.system-card > p { color: rgba(248, 242, 230, .94); font-size: 14px; line-height: 1.8; }
+.source-jump--dark { font-size: 12px; }
+
+/* 首屏空洞带：左列与卡片底对齐，统计行紧随其后 */
+.hero { align-items: end; }
+.hero-facts { margin-top: 26px; }
+
+/* --------------------------------------------------------------------------
+   Round 8 · 断点体检与空洞收口
+   -------------------------------------------------------------------------- */
+.filter-button { white-space: nowrap; }
+.filter-group { flex-wrap: nowrap; }
+
+/* 来源图例卡：补分级统计，消除右侧空洞 */
+.grade-stats { display: grid; gap: 7px; padding-top: 13px; margin-top: 13px; border-top: 1px solid #c9bdac; }
+.grade-stat { display: flex; align-items: center; gap: 9px; color: var(--ink-soft); font-size: 11px; }
+
+/* S 编码条去控件感：无外框，编码本身即下划线链接 */
+.system-card .dimension { padding: 0; background: transparent; border: 0; margin-bottom: 10px; }
+
+/* 详情左缘色条与匹配度分档一致 */
+.detail-main.tier-high::before { background: var(--red); }
+.detail-main.tier-mid::before, .detail-main.tier-low::before { background: linear-gradient(var(--gold), rgba(154, 115, 40, .6)); }
+
+/* --------------------------------------------------------------------------
+   Round 9 · 核心器件自明化
+   -------------------------------------------------------------------------- */
+.match-scale { margin: 9px 0 2px; }
+.match-scale .match-bar { margin: 0; }
+.match-bar::before, .match-bar::after { content: none; }
+.match-tick { position: absolute; top: -3px; bottom: -3px; width: 2px; background: rgba(23, 39, 43, .42); }
+.match-scale-labels { position: relative; height: 13px; margin-top: 4px; color: var(--ink-faint); font-size: 9px; letter-spacing: .02em; }
+.match-scale-labels span { position: absolute; transform: translateX(-50%); }
+.match-scale-labels span:first-child { left: 0; transform: none; }
+.match-scale-labels span:nth-child(2) { left: 70%; }
+.match-scale-labels span:nth-child(3) { left: 85%; }
+.match-scale-labels span:nth-child(4) { right: 0; left: auto; transform: none; }
+
+.match-bar-low span { background: linear-gradient(90deg, #b3afa3, #8d8a80); }
+.match-tier-low { color: #6f6c63; }
+.tier-chip.tier-low::before { background: #8d8a80; }
+
+/* 深色区对比度校准 */
+.system-card > p { color: #f2ecdf; }
+.system-card .system-meta { color: rgba(240, 233, 219, .66); }
+.matrix-note { color: rgba(238, 231, 216, .72); }
+.life-list p { color: #cfe0da; }
+
+/* 展开全文：去整行按钮机械感，改为轻量文字链 */
+.system-card [data-matrix-details] { margin-top: auto; background: transparent; border: 0; padding: 0; }
+.system-card [data-matrix-details] > summary { display: inline-block; padding: 8px 0 0; color: var(--gold-soft); font-weight: 400; }
+.system-card [data-matrix-details] > summary::before { display: none; }
+.system-card [data-matrix-details][open] { padding-top: 4px; border-top: 1px dashed rgba(205, 166, 106, .28); }
+.system-card [data-matrix-details][open] > summary { color: rgba(235, 226, 211, .55); }
+
+/* 筛选器可供性：未选中项也是明确的 chip 控件 */
+.filter-button { padding: 6px 13px; background: rgba(248, 244, 235, .55); border: 1px solid var(--line-strong); border-radius: 999px; transition: border-color .2s ease, background .2s ease; }
+.filter-button:hover { border-color: #c99a8f; }
+
+/* Round 10 · 收口 */
+.detail-cta { color: #fff8ed; background: #8a3b31; border-color: #8a3b31; }
+.detail-cta:hover { background: #733028; border-color: #733028; }
+#detail { border-top: 1px solid var(--line-strong); }
+
+/* --------------------------------------------------------------------------
+   Round 11 · 系统纪律：单一色彩语义 + 出品前内容校对
+   -------------------------------------------------------------------------- */
+/* 证据分级统一墨色字母牌：颜色只留给匹配三档 */
+.evidence-a, .evidence-b, .evidence-c, .evidence-d { color: #24343a; background: #eceadf; border: 1px solid rgba(23, 39, 43, .2); }
+.evidence-a { color: #24343a; background: #eceadf; border-color: rgba(23, 39, 43, .2); }
+.life-footnote .evidence-label { color: #24343a; background: #eceadf; border-color: rgba(23, 39, 43, .2); }
+
+/* 数字等宽排版 */
+.match-score, .hero-facts strong, .heading-count, .match-scale-labels, .source-code { font-variant-numeric: tabular-nums; }
+
+/* Round 13 · 盲评收口：徽章拆对 / A-D 深浅梯度 / 筛选 chips / 对比度 */
+.badge-pair { display: inline-flex; gap: 8px; align-items: center; flex-wrap: wrap; }
+.match-pill { padding: 5px 10px; color: #8a3b31; background: #f3e0da; border: 1px solid rgba(138, 59, 49, .35); border-radius: 3px; font-size: 11px; font-weight: 600; font-variant-numeric: tabular-nums; }
+.conf-pill { padding: 5px 10px; color: #5c5138; background: #f1e2c4; border: 1px solid rgba(176, 122, 55, .4); border-radius: 3px; font-size: 11px; }
+
+/* A–D 四档墨色深浅梯度（扫读可辨，不与三档撞色） */
+.evidence-a { color: #f4efe3; background: #22333a; border-color: #22333a; }
+.evidence-b { color: #f4efe3; background: #3a4d54; border-color: #3a4d54; }
+.evidence-c { color: #f2ede1; background: #5a6a70; border-color: #5a6a70; }
+.evidence-d { color: #2f3a3e; background: #b9beb6; border-color: #b9beb6; }
+.life-footnote .evidence-label { color: #f4efe3; background: #3a4d54; border-color: #3a4d54; }
+
+.grade-filter { display: inline-flex; gap: 6px; margin-left: 12px; }
+.grade-chip { padding: 7px 13px; color: var(--ink-soft); background: rgba(248, 244, 235, .55); border: 1px solid var(--line-strong); border-radius: 999px; font-size: 11px; font-weight: 600; transition: all .2s ease; }
+.grade-chip.is-on { color: #f4efe3; background: #22333a; border-color: #22333a; }
+.grade-chip:focus-visible { outline: 3px solid rgba(138, 59, 49, .3); outline-offset: 2px; }
+
+.candidate-meta { color: #6d675a; }
+.source-code { color: #6d675a; }
+.evidence-legend li { color: #57513f; font-size: 11px; }
+
+/* --------------------------------------------------------------------------
+   Round 14 · 分档编码冗余化（色相之外的形状/质感差）
+   -------------------------------------------------------------------------- */
+/* 三档刻度：灰陶档改描边+斜纹，与鎏金实心拉开质感差 */
+.match-bar-low { background: rgba(23, 39, 43, .07); border: 1px solid rgba(109, 108, 99, .5); }
+.match-bar-low span { background: repeating-linear-gradient(135deg, #a9a599 0 4px, #c9c5b8 4px 8px); }
+.match-scale-labels { color: #6d675a; font-size: 10px; }
+
+/* 证据徽章四档：实心方 / 实心圆角 / 描边 / 虚线描边（形状冗余编码） */
+.evidence-a { border-radius: 2px; color: #f4efe3; background: #22333a; }
+.evidence-b { border-radius: 8px; color: #f4efe3; background: #4a5a60; }
+.evidence-c { color: #2c3a40; background: transparent; border: 1.5px solid #2c3a40; }
+.evidence-d { color: #6d675a; background: transparent; border: 1.5px dashed #9a958a; }
+.life-footnote .evidence-label { color: #f4efe3; background: #4a5a60; }
+
+/* 分级统计条 */
+.grade-stat .stat-bar { display: inline-block; width: 90px; height: 5px; margin: 0 8px; vertical-align: middle; background: rgba(23, 39, 43, .1); border-radius: 3px; overflow: hidden; }
+.grade-stat .stat-bar i { display: block; height: 100%; background: #22333a; border-radius: 3px; }
+
+/* 区级说明竖线改暖赭 */
+.shared-evidence-note { border-left-color: #b07a37; }
+
+/* 候选卡描述定行，三卡操作行对齐 */
+.card-description { display: -webkit-box; overflow: hidden; -webkit-line-clamp: 3; -webkit-box-orient: vertical; min-height: 56px; }
+.load-more { white-space: nowrap; }
+
+/* 中窄屏导航减压 */
+@media (max-width: 900px) {
+  .header-meta { display: none; }
+  .header-inner { gap: 24px; }
+  .primary-nav { gap: 18px; }
+}
+
+/* --------------------------------------------------------------------------
+   Round 15 · 系统焊接：形状统一 / 徽章放大 / 优先级分层
+   -------------------------------------------------------------------------- */
+/* 筛选胶囊与徽章同族：方角 + 字母常显 */
+.grade-chip { border-radius: 3px; min-width: 34px; padding: 7px 10px; font-variant-numeric: tabular-nums; }
+
+/* 徽章放大到可辨尺寸 */
+.evidence-label { width: 24px; height: 24px; font-size: 11.5px; }
+.source-level, .chain-item .evidence-label { width: 26px; height: 26px; font-size: 12.5px; }
+
+/* 主候选分层：仅主卡保留朱砂实心主按钮，备选降为描边 */
+.candidate-card:not(.is-featured) .detail-cta { color: #8a3b31; background: transparent; border-color: rgba(138, 59, 49, .5); }
+.candidate-card:not(.is-featured) .detail-cta:hover { color: #fff8ed; background: #8a3b31; }
+
+/* 小字号提升 */
+.candidate-meta, .source-code { font-size: 13px; }
+
+/* D 级 0 条占位线 */
+.grade-stat .stat-bar.is-zero i { display: none; }
+.grade-stat .stat-bar.is-zero { background: transparent; border-top: 2px dotted #9a958a; height: 0; vertical-align: super; }
+
+/* 分级脚注 */
+.grade-footnote { margin: 2px 0 0; color: var(--ink-faint); font-size: 10.5px; }
+
+/* 矩阵 S 码行降噪：去下划线改悬停 */
+.system-card .dimension .source-jump--dark { border-bottom-color: transparent; }
+.system-card .dimension .source-jump--dark:hover { border-bottom-color: rgba(255, 248, 232, .7); }
+
+/* 矩阵卡：S 码行移至底部，与展开同行视觉 */
+.system-card .dimension { order: 3; margin: 12px 0 0; }
+.system-card h3 { order: 1; }
+.system-card > p { order: 2; }
+.system-card [data-matrix-details] { order: 4; }
+
+/* --------------------------------------------------------------------------
+   Round 16 · 实测校准（better-typography / better-colors 纪律）
+   对比度：调光深不调色相；字号：说明层 ≥12px，注释层 ≥11px
+   -------------------------------------------------------------------------- */
+.helper-text, .match-legend, .source-count { color: #6d685d; font-size: 12.5px; }
+.card-footer { color: #6d685d; font-size: 12px; }
+.source-code { color: #6b6355; font-size: 12px; }
+.metric span, .metric small { color: #6d685d; font-size: 11.5px; }
+.fact-list dt { color: #6d685d; font-size: 11.5px; }
+.fact-list dd { font-size: 12.5px; }
+.chain-note { color: #6d685d; font-size: 12px; }
+.detail-meta { color: #6d685d; font-size: 12.5px; }
+.match-scale-labels { color: #635d50; font-size: 11px; }
+.candidate-meta { color: #635d50; }
+.period-label { color: #7a5620; }
+.card-subtitle { font-size: 12.5px; }
+.grade-footnote { color: #6d685d; font-size: 11px; }
+.life-list p { font-size: 12px; }
+.life-list strong { font-size: 12.5px; }
+.life-footnote { font-size: 11.5px; }
+.timeline-era { font-size: 11px; }
+.timeline p { font-size: 12.5px; }
+.matrix-note { font-size: 12px; }
+.system-meta { font-size: 11.5px; }
+.chain-item p { font-size: 11.5px; }
+.section-kicker { font-size: 10.5px; }
+
+/* 候选卡顶边档色带：档位即卡片身份 */
+.candidate-card::before { background: #8d8a80; opacity: 1; }
+.candidate-card.tier-high::before { background: var(--red); }
+.candidate-card.tier-mid::before { background: linear-gradient(90deg, #9a7328, #c9a45c); }
+
+/* 制度矩阵：朝代序数字锚，重建时间脉络 */
+.era-no { order: 0; margin-bottom: 6px; color: rgba(205, 166, 106, .85); font-family: var(--serif); font-size: 13px; font-weight: 500; letter-spacing: .12em; }
+.system-card { border-top: 1px solid rgba(205, 166, 106, .18); }
+
+/* Round 16b · 残余三处收敛 */
+.helper-text, .match-legend, .card-footer, .source-count { color: #656054; }
+.source-item .source-code { color: #6b6355; font-size: 12px; }
+.grade-footnote { color: #5f5a4e; }
+
+/* --------------------------------------------------------------------------
+   Round 17 · 制度矩阵时间轴 + 窄屏触控
+   -------------------------------------------------------------------------- */
+.era-group { display: grid; grid-template-columns: 46px minmax(0, 1fr); gap: 0 22px; }
+.era-axis { position: relative; display: flex; flex-direction: column; align-items: center; }
+.era-axis i { flex: 1; width: 1px; background: linear-gradient(rgba(205, 166, 106, .6), rgba(205, 166, 106, .12)); }
+.era-axis span { padding: 2px 0 14px; color: var(--gold-soft); font-family: var(--serif); font-size: 15px; letter-spacing: .3em; writing-mode: vertical-rl; }
+.era-group .system-grid { grid-template-columns: repeat(2, minmax(0, 1fr)); margin-bottom: 26px; }
+.era-group:last-of-type .system-grid { margin-bottom: 0; }
+
+/* 清除按钮热区扩大 */
+.clear-button { width: 34px; height: 34px; font-size: 22px; }
+
+/* 移动端输入 16px（防 iOS 聚焦缩放） */
+@media (max-width: 760px) {
+  .input-wrap input { font-size: 16px; }
+}
+
+/* 候选卡投影减法 */
+.candidate-card { box-shadow: 0 5px 0 rgba(17, 40, 43, .03); }
+
+/* --------------------------------------------------------------------------
+   Round 18 · 快赢：主候选结构优势 / S11 徽章热区 / 胶囊触控
+   -------------------------------------------------------------------------- */
+.candidate-card.is-featured { background: linear-gradient(150deg, #fdf9ee, #f6f0e2); border-color: #c2a06a; }
+.candidate-card.is-featured::before { height: 8px; }
+.candidate-card.is-featured h3 { font-size: 31px; }
+.candidate-card.is-featured .card-description { font-size: 13px; }
+
+.source-jump { display: inline-flex; align-items: center; min-height: 30px; padding: 5px 12px; background: transparent; border: 1px solid rgba(138, 109, 59, .45); border-radius: 3px; }
+.source-jump:hover { border-color: rgba(138, 59, 49, .55); background: rgba(248, 244, 235, .6); }
+
+.query-chips { gap: 10px; }
+.query-chips button { padding: 9px 14px; font-size: 12.5px; border-radius: 3px; }
+
+/* Round 18b · 三档数字对比度收敛（实测 4.04/4.26 → ≥4.5） */
+.match-tier-high { color: #9c4335; }
+.match-tier-mid, .match-tier-low { color: #7a5820; }
+.match-tier-low { color: #63605a; }
+
+/* Round 18c · 窄屏页头双行重排：任务起点上移 */
+@media (max-width: 760px) {
+  .site-header { height: auto; }
+  .header-inner { flex-wrap: wrap; gap: 8px 14px; padding-top: 10px; padding-bottom: 8px; }
+  .brand { order: 1; }
+  .header-meta { order: 2; display: none; }
+  .primary-nav { order: 3; width: 100%; gap: 14px; overflow-x: auto; scrollbar-width: none; }
+  .primary-nav::-webkit-scrollbar { display: none; }
+  .primary-nav a { flex: 0 0 auto; padding: 6px 0 8px; }
+}
+
+@media (max-width: 640px) {
+  .hero.shell { padding-top: 44px; padding-bottom: 40px; }
+  .hero h1 { font-size: clamp(30px, 8.6vw, 42px); }
+  .hero-intro { font-size: 13.5px; margin-bottom: 24px; }
+  .eyebrow, .section-kicker { letter-spacing: .14em; }
+  .search-card { padding: 20px 16px 18px; }
+}
+
+/* --------------------------------------------------------------------------
+   Round 19 · 收尾两件（R18 评论员清单中代码可确证项）
+   -------------------------------------------------------------------------- */
+/* 矩阵卡：S 码移入展开态后的来源行 */
+.matrix-source-row { display: flex; align-items: center; flex-wrap: wrap; gap: 6px; }
+.matrix-source-row strong { flex: 0 0 auto; }
+
+/* 页头 v0.1 徽标降调（非营销信息，退为档案登记口吻） */
+.header-meta { font-size: 10px; letter-spacing: .06em; opacity: .82; }
+.header-meta .status-dot { width: 5px; height: 5px; box-shadow: 0 0 0 2px rgba(196, 162, 98, .12); }
+
+/* 矩阵展开态为深色面板：来源码按钮改金系（实测红字 2.03 → 目标 ≥4.5） */
+.matrix-source-row .source-jump { color: var(--gold-soft); border: 1px solid rgba(205, 166, 106, .42); background: rgba(246, 239, 226, .05); }
+.matrix-source-row .source-jump:hover { color: #fff8e8; border-color: rgba(255, 248, 232, .7); }
+.matrix-source-row .code-sep { color: rgba(235, 224, 206, .72); }
+
+/* --------------------------------------------------------------------------
+   Round 20 · R19 盲评清单修复（评论员 7.5 → 目标 ≥9）
+   -------------------------------------------------------------------------- */
+/* 时间轴卡标题：括注年份不断行，顿号后可断 */
+.system-card h3 .nb { white-space: nowrap; }
+
+/* 详情匹配徽章与三档色系对齐（卡片大数字同源：朱砂/鎏金/灰陶） */
+.match-pill--high { color: #943f34; background: #f6e1db; border-color: rgba(156, 67, 53, .42); }
+.match-pill--mid { color: #6f5000; background: #f4e9cd; border-color: rgba(122, 88, 32, .42); }
+.match-pill--low { color: #55524b; background: #edebe4; border-color: rgba(99, 96, 90, .48); }
+
+/* 首屏印章水印：由不可见改为可感知的暗纹（历 字显形） */
+.hero.shell::after { color: rgba(236, 207, 158, .13); border-color: rgba(205, 166, 106, .22); box-shadow: 0 0 0 12px rgba(205, 166, 106, .045), 0 0 0 24px rgba(205, 166, 106, .032); }
+
+/* 首屏底部空带收敛 + 副标题断词优化 */
+.hero.shell { padding-bottom: 66px; }
+.hero-intro { text-wrap: pretty; }
+
+/* 统计标签 11 → 12px（桌面；移动端覆盖不受影响） */
+.hero-facts span { font-size: 12px; }
+
+/* 图例行：允许两行呼吸，降低单行密度 */
+.match-legend { max-width: 700px; line-height: 1.65; text-wrap: pretty; }
+
+/* --------------------------------------------------------------------------
+   Round 21 · R20 盲评微修（7.0 回补：$1 事故已在 app.js 修复）
+   -------------------------------------------------------------------------- */
+/* 平板及以下：输入行与主按钮堆叠，主操作近全宽（沿用手机端的好模式） */
+@media (max-width: 900px) {
+  .role-search { flex-direction: column; }
+  .role-search .button-primary { width: 100%; }
+}
+
+/* 图例色点与文字基线对齐（10px 点 + 下沉 1px） */
+.tier-chip::before { width: 10px; height: 10px; vertical-align: -1px; border-radius: 2px; }
+
+/* 图例行内距与行间距呼吸 */
+.legend-row { margin-top: 10px; row-gap: 10px; }
+
+/* 桌面筛选胶囊内边距 */
+.filter-button { padding: 7px 15px; }
+
+/* 眉标与主标题间距 */
+.hero .eyebrow { margin-bottom: 21px; }
+
+/* 生活百科暗卡：说明文字 ≥12px（10px 过小） */
+.life-list strong { font-size: 12px; }
+.life-list p { font-size: 12px; }
+
+/* 移动端触控目标：导航项与胶囊 ≥40px */
+@media (max-width: 760px) {
+  .primary-nav a { padding: 10px 0 12px; }
+  .query-chips button { padding: 9px 12px; min-height: 40px; }
+  .filter-button { min-height: 40px; }
+}
+
+/* --------------------------------------------------------------------------
+   Round 22 · R21 盲评（8.2）遗留修复
+   -------------------------------------------------------------------------- */
+/* 修复：外层容器曾复用 .system-grid 把 era-group 挤成三列（卡片仅 147px） */
+.system-groups { display: block; }
+
+/* A/B 徽章拉开明度差（形状 + 深浅双通道） */
+.evidence-b { background: #57676e; border-color: #57676e; }
+.evidence-d { border-color: #8b8578; }
+
+/* 详情两栏底边对齐 */
+.detail-layout { align-items: stretch; }
+
+/* 来源等级筛选触控与呼吸 */
+.grade-chip { min-width: 40px; min-height: 34px; padding: 8px 14px; }
+
+/* 桌面快捷胶囊呼吸（820px 单行过满则自然换行） */
+.query-chips button { padding: 6px 11px; }
+
+/* 指标区匹配度数值沿用三档色 */
+.metric strong { font-variant-numeric: tabular-nums; }
+/* 拉伸后暗卡内容分布：列表占满、脚注沉底（≤1000px 的两列网格布局不受影响） */
+.life-card { display: flex; flex-direction: column; }
+.life-list { flex: 1; }
+.life-footnote { margin-top: auto; }
+/* 指标区匹配度数值三档色（提优先级压过 .metric strong 墨色） */
+.metric strong.match-tier-high { color: #9c4335; }
+.metric strong.match-tier-mid { color: #7a5820; }
+.metric strong.match-tier-low { color: #63605a; }
+
+/* --------------------------------------------------------------------------
+   Round 23 · R22 盲评系统性修复（多轮复现项优先）
+   -------------------------------------------------------------------------- */
+/* 深色制度区的白底搜索框 → 暗面化 */
+.systems-section .table-search { background: rgba(246, 239, 226, .07); border-color: rgba(205, 166, 106, .38); color: #f0e8d8; }
+.systems-section .table-search::placeholder { color: rgba(235, 224, 206, .45); }
+.systems-section .table-search:focus { border-color: rgba(205, 166, 106, .75); outline: 2px solid rgba(205, 166, 106, .22); }
+
+/* 属性表标签 ≥11px */
+.fact-list dt { font-size: 11px; }
+
+/* 职能边界段落行距 */
+.function-compare p { line-height: 1.75; }
+
+/* 示例胶囊桌面 3+3 平衡折行（替代 5+1 孤行） */
+.search-card .query-chips { display: grid; grid-template-columns: repeat(3, auto); gap: 7px 8px; justify-content: start; }
+
+/* 移动端导航触控宽度（含水平热区） */
+@media (max-width: 760px) {
+  .primary-nav a { padding: 10px 8px 12px; }
+}
+
+/* 指标区垂直节奏 */
+.metric { gap: 5px; }
+
+/* D 级 0 条占位线缩短，避免误读为图例 */
+.grade-stat .stat-bar.is-zero { width: 28px; }
+
+/* Round 24 · R23 微修：S 码加容器（与详情等级徽章规格呼应） */
+.source-item .source-code { align-self: center; padding: 3px 9px; border: 1px solid #c9bda6; border-radius: 3px; background: rgba(248, 244, 235, .6); }
+
+/* --------------------------------------------------------------------------
+   Round 25 · R24 盲评统一性修复
+   -------------------------------------------------------------------------- */
+/* 全站主行动色归一：详情 CTA 与首屏主按钮同一朱砂（#8a3b31 → var(--red)） */
+.detail-cta { color: #fff8ed; background: var(--red); border-color: var(--red); }
+.detail-cta:hover { background: #9c3f33; border-color: #9c3f33; }
+.candidate-card:not(.is-featured) .detail-cta { color: #8a3b31; background: transparent; border-color: rgba(138, 59, 49, .5); }
+.candidate-card:not(.is-featured) .detail-cta:hover { color: #fff8ed; background: var(--red); border-color: var(--red); }
+
+/* 候选区筛选激活语言与来源区统一（深墨实心） */
+.filter-button.is-selected { color: #f4efe3; background: #22333a; border-color: #22333a; }
+.filter-button:hover:not(.is-selected) { color: #5a4a3a; border-color: #c99a8f; background: transparent; }
+
+/* 示例胶囊边框可见性 */
+.query-chips button { border-color: #c6b998; }
+
+/* 主候选身份强调（与备选拉开） */
+.candidate-card.is-featured .card-subtitle { color: #8a3b31; font-weight: 600; }
+
+/* 平板首屏空带收敛 */
+@media (max-width: 900px) {
+  .hero.shell { padding-bottom: 48px; }
+  .hero-facts { margin-top: 18px; }
+}
+
+/* --------------------------------------------------------------------------
+   Round 26 · R25 盲评定向修复
+   -------------------------------------------------------------------------- */
+/* C 级徽章：描边内加淡填充，与 B 实心 / D 虚线进一步拉开 */
+.evidence-c { background: #dfe6df; }
+
+/* 制度卡暗底小字对比提档（.7 → .8） */
+.system-card p { color: rgba(235, 226, 211, .8); }
+
+/* 时间轴轴栏与卡网收紧（断连感） */
+.era-group { gap: 0 14px; }
+
+/* 详情面板返回锚点 */
+.detail-back { align-self: center; margin-right: 10px; color: #8a7a5e; border-bottom: 1px solid rgba(138, 122, 94, .45); font-size: 11px; white-space: nowrap; }
+.detail-back:hover { color: #8a3b31; border-bottom-color: rgba(138, 59, 49, .5); }
+
+/* 平板及以下：搜索卡居中，消解左侧空场 */
+@media (max-width: 1000px) {
+  .hero .search-card { margin-right: auto; margin-left: auto; }
+}
+
+/* --------------------------------------------------------------------------
+   Round 27 · 终清扫（R26 核验后仅存实项）
+   -------------------------------------------------------------------------- */
+/* 移动端导航字号 10→12px（实测宽度足够容纳四项） */
+@media (max-width: 760px) {
+  .primary-nav a { font-size: 12px; }
+}
+
+/* 时间轴竖排朝代名：字号与可读性提档 */
+.era-axis span { font-size: 16px; letter-spacing: .22em; color: #efD9a8; }
+
+/* S 码等宽列（一位/两位数对齐） */
+.source-item .source-code { min-width: 46px; text-align: center; font-variant-numeric: tabular-nums; }
+
+/* --------------------------------------------------------------------------
+   Round 28 · 移动导航裁切根治 + 导航当前项强化
+   根因：flex:1 的 basis 0% 压过 width:100%，导航与品牌同行只剩 ~260px，
+   第 4 项自 R18c 起被裁（容器内滚动，文档级溢出检测不可见）。
+   -------------------------------------------------------------------------- */
+@media (max-width: 760px) {
+  .primary-nav { flex: 0 0 100%; order: 3; width: auto; }
+}
+
+/* 导航当前项：文字提亮 + 下划线加粗（回应「桌面无可见高亮」） */
+.primary-nav a:hover, .primary-nav a.is-active { color: #f2dfae; }
+.primary-nav a.is-active::after { height: 3px; bottom: -1px; }
+
+/* Round 28 · 计数徽章基线贴合标题（R23/R28 两轮复现项） */
+.heading-count { vertical-align: baseline; position: relative; top: -7px; }
+
+/* --------------------------------------------------------------------------
+   Round 29 · 终抛光（四项多轮复现实项）
+   -------------------------------------------------------------------------- */
+/* 图例密度：两行呼吸（定义行 + 免责行），不再单行三概念硬拉 */
+.match-legend { max-width: 520px; }
+
+/* 详情主面板与卡片圆角语言统一（去双边界手段，保留朱红竖条） */
+.detail-main { border-radius: var(--radius-md); border-color: #d5c9b8; box-shadow: none; }
+
+/* 首屏深浅硬切 → 设计过的金色接缝 */
+.hero.shell { border-bottom: 1px solid rgba(205, 166, 106, .35); }
+
+/* 朝代 tab 副标 10→11px */
+.period-tab small { font-size: 11px; }
+
+/* --------------------------------------------------------------------------
+   Round 30 · 三评审员共识批修（3/3 与 2/3 命中项）
+   -------------------------------------------------------------------------- */
+/* 3/3 共识：暗区 tab 文字对比提档 */
+.period-tab { color: rgba(233, 226, 211, .78); }
+.period-tab small { color: rgba(233, 226, 211, .6); font-size: 11px; }
+
+/* 2/3 共识：制度区金色减载（右上链接改米白系） */
+.systems-section .text-button, .systems-section .all-link { color: rgba(235, 226, 211, .85); }
+.systems-section .text-button:hover { color: #fff8e8; }
+
+/* 2/3 共识：B/C 徽章再拉开明度差 */
+.evidence-b { background: #64787f; border-color: #64787f; }
+.evidence-c { background: #d8e0d8; }
+
+/* 2/3 共识：平板/手机首屏左右失衡 → 中心化 */
+@media (max-width: 900px) {
+  .hero-copy { max-width: 560px; margin-right: auto; margin-left: auto; text-align: center; }
+  .hero-copy .eyebrow { justify-content: center; }
+  .hero-copy .eyebrow-line { display: none; }
+  .hero-facts { justify-content: center; }
+}

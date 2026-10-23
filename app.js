@@ -73,6 +73,7 @@
     matrixPeriods: null,
     matrixLimit: 12,
     sourceQuery: '',
+    sourceGrade: '',
     sourceLimit: 10,
     loading: true,
     errors: [],
@@ -256,7 +257,9 @@
 
   function allExampleTerms(example) {
     var label = exampleLabel(example);
-    return [label].concat(EXAMPLE_ALIASES[label] || []);
+    return [label]
+      .concat(asArray(example.aliases))
+      .concat(EXAMPLE_ALIASES[label] || []);
   }
 
   function termsForQuery(query) {
@@ -389,9 +392,9 @@
     var tier = pct >= 85 ? 'high' : (pct >= 70 ? 'mid' : 'low');
     var tagRow = sharedEvidence ? '' :
       '<div class="tag-row"><span class="tag tag-evidence evidence-' + evidenceKey(candidate.evidence_level) + '">' + escapeHtml(candidate.evidence_level) + '级证据</span><span class="tag tag-muted">置信度 ' + escapeHtml(candidate.confidence) + '</span></div>';
-    return '<article class="candidate-card ' + (index === 0 ? 'is-featured' : '') + '" data-candidate-index="' + index + '">' +
-      '<div class="card-topline"><span class="period-label">' + escapeHtml(era || '功能类比') + '</span><span class="topline-right"><span class="conf-chip" title="证据支撑的确定程度">置信度 ' + escapeHtml(candidate.confidence) + '</span><span class="match-score match-tier-' + tier + '" title="职能匹配度（检索相关性）">' + pct + '<span>%</span></span></span></div>' +
-      '<div class="match-bar match-bar-' + tier + '" aria-hidden="true"><span style="width:' + pct + '%"></span></div>' +
+    return '<article class="candidate-card ' + (index === 0 ? 'is-featured ' : '') + 'tier-' + tier + '" data-candidate-index="' + index + '">' +
+      '<div class="card-topline"><span class="period-label">' + escapeHtml(era || '功能类比') + '</span><span class="match-score match-tier-' + tier + '" title="职能匹配度（检索相关性）">' + pct + '<span>%</span></span></div>' +
+      '<div class="match-scale" aria-hidden="true"><div class="match-bar match-bar-' + tier + '"><span style="width:' + pct + '%"></span><i class="match-tick" style="left:70%"></i><i class="match-tick" style="left:85%"></i></div><div class="match-scale-labels"><span>0</span><span>70</span><span>85</span><span>100</span></div></div>' +
       '<h3>' + escapeHtml(candidate.ancient_candidate) + '</h3>' +
       '<p class="card-subtitle">' + (index === 0 ? '主候选 · ' : '备选 · ') + '功能类比</p>' +
       '<p class="card-description">' + escapeHtml(candidate.duty_difference) + '</p>' +
@@ -511,7 +514,7 @@
       if (!found) {
         return '<div class="chain-item"><span class="evidence-label evidence-d">?</span><div><h4>' + escapeHtml(id) + '</h4><p>来源登记表中未收录该编号。</p></div></div>';
       }
-      var meta = [found.author_or_institution, found.year].filter(Boolean).join(' · ');
+      var meta = [cleanInstitution(found.author_or_institution), found.year].filter(Boolean).join(' · ');
       var link = found.url ? '<a href="' + escapeHtml(found.url) + '" target="_blank" rel="noreferrer">打开来源 ↗</a>' : '';
       return '<div class="chain-item"><span class="evidence-label evidence-' + evidenceKey(found.authority_grade) + '">' + escapeHtml(toText(found.authority_grade).charAt(0) || '?') + '</span><div><h4>' + escapeHtml(found.title || id) + '</h4><p>' + escapeHtml(meta) + '</p>' + link + '</div></div>';
     });
@@ -538,7 +541,20 @@
   function renderSelectedDetail(candidate) {
     if (!candidate) return;
     setText(findAll(['[data-role="office-title"]']), candidate.ancient_candidate);
-    setText(findAll(['[data-role="office-confidence"]']), '匹配度 ' + Math.round(candidate.similarity * 100) + '% · 置信度 ' + candidate.confidence);
+    var badge = first(['[data-role="office-confidence"]']);
+    var badgePct = Math.round(candidate.similarity * 100);
+    var badgeTier = badgePct >= 85 ? 'high' : (badgePct >= 70 ? 'mid' : 'low');
+    if (badge) {
+      badge.innerHTML = '<span class="conf-pill">置信度 ' + escapeHtml(candidate.confidence) + '</span>';
+    }
+    var similar = first(['[data-role="compare-similar"]']);
+    if (similar) similar.textContent = candidate.daily_activities.join('；') + '。';
+    var difference = first(['[data-role="compare-difference"]']);
+    if (difference) difference.textContent = candidate.risks.length
+      ? '主要风险：' + candidate.risks[0] + '。此外，历史官职的辖区、制度身份与权力来源各有时代差异，不能直接等同现代编制或职级。'
+      : candidate.duty_difference;
+    var lifeSummary = first(['.life-summary p']);
+    if (lifeSummary) lifeSummary.textContent = candidate.life;
     var detailMain = first(['.detail-main']);
     if (detailMain) {
       var detailPct = Math.round(candidate.similarity * 100);
@@ -546,20 +562,17 @@
       detailMain.classList.remove('tier-high', 'tier-mid', 'tier-low');
       detailMain.classList.add('tier-' + detailTier);
     }
-    setText(findAll(['[data-role="function-compare"] .compare-intro:first-child p']), candidate.duty_difference);
-    var difference = candidate.risks.length
-      ? '主要风险：' + candidate.risks[0] + '。此外，历史官职的辖区、制度身份与权力来源各有时代差异，不能直接等同现代编制或职级。'
-      : '历史官职的辖区、制度身份与权力来源各有时代差异，不能直接等同现代编制或职级。';
-    setText(findAll(['[data-role="function-compare"] .compare-difference p']), difference);
     setText(findAll(['[data-role="office-location"]']), '辖区与驻地依职能推定');
 
     var era = dynastyOf(candidate) || (state.scenario ? state.scenario.dynasty : '跨时期');
     var metrics = first(['[data-role="office-metrics"]']);
     if (metrics) {
       metrics.innerHTML =
-        metricHtml('证据等级', candidate.evidence_level + ' 级', '关联来源 ' + candidate.source_ids.length + ' 项') +
-        metricHtml('置信度', candidate.confidence, '职能类比 · 非品秩换算') +
-        metricHtml('时期背景', era, state.scenario ? state.scenario.location : '');
+        metricHtml('匹配度', Math.round(candidate.similarity * 100) + '%', '职能相似度估计 · 非品秩换算') +
+        metricHtml('置信度', candidate.confidence, '证据支撑的确定程度') +
+        metricHtml('证据等级', candidate.evidence_level + ' 级', '关联来源 ' + candidate.source_ids.length + ' 项');
+      var metricStrong = metrics.querySelector('.metric strong');
+      if (metricStrong) metricStrong.classList.add('match-tier-' + badgeTier);
     }
     var facts = first(['.fact-list']);
     if (facts) {
@@ -575,10 +588,13 @@
 
     var list = first(['[data-section="life-encyclopedia"] .life-list']);
     if (list) {
-      var labels = ['典型事务', '日程与流程', '协调要点'];
-      var items = candidate.daily_activities.slice(0, 3);
-      list.innerHTML = (items.length ? items : ['典型工作周期需结合时期、驻地和现存文书判断。']).map(function (item, index) {
-        return '<li><span class="life-marker">0' + (index + 1) + '</span><div><strong>' + labels[index] + '</strong><p>' + escapeHtml(item) + '</p></div></li>';
+      var items = [
+        { label: '服饰形制', text: candidate.clothing },
+        { label: '日常节奏', text: candidate.daily_activities[0] || '' },
+        { label: '需要面对', text: candidate.risks[0] || candidate.risks.join('；') }
+      ].filter(function (item) { return item.text; });
+      list.innerHTML = (items.length ? items : [{ label: '典型事务', text: '典型工作周期需结合时期、驻地和现存文书判断。' }]).map(function (item, index) {
+        return '<li><span class="life-marker">0' + (index + 1) + '</span><div><strong>' + escapeHtml(item.label) + '</strong><p>' + escapeHtml(item.text) + '</p></div></li>';
       }).join('');
     }
     var footnote = first(['[data-section="life-encyclopedia"] .life-footnote span:last-child']);
@@ -621,9 +637,18 @@
     var t = toText(text);
     if (t.length <= limit) return t;
     var cut = t.slice(0, limit);
-    var i = cut.lastIndexOf('。');
+    var i = -1;
+    for (var k = cut.length - 1; k >= Math.floor(limit * 0.5); k -= 1) {
+      if ('。；，、：'.indexOf(cut.charAt(k)) >= 0) { i = k; break; }
+    }
     if (i > limit * 0.5) return cut.slice(0, i + 1) + '……';
     return cut + '……';
+  }
+
+  function matrixTitleHtml(text) {
+    var safe = escapeHtml(toText(text));
+    safe = safe.replace(/（([^）]{2,})）/g, '<span class="nb">（$1）</span>');
+    return safe.replace(/、/g, '、<wbr>');
   }
 
   function uniqueByContent(rows) {
@@ -636,6 +661,14 @@
     });
   }
 
+  var ERA_GROUPS = [
+    { label: '先秦', periods: ['夏、商与西周', '春秋战国'] },
+    { label: '秦汉', periods: ['秦（', '两汉（'] },
+    { label: '隋唐', periods: ['三国两晋南北朝', '隋唐（'] },
+    { label: '宋元', periods: ['五代十国与两宋', '辽（916', '元（1271'] },
+    { label: '明清', periods: ['明（1368', '清至清末'] }
+  ];
+
   function renderMatrix() {
     var rows = uniqueByContent(getFilteredMatrix());
     findAll(['[data-matrix-count]']).forEach(function (node) { node.textContent = rows.length + ' 条'; });
@@ -645,27 +678,46 @@
         return;
       }
       var visible = rows.slice(0, state.matrixLimit);
-      var html = visible.map(function (row, index) {
-        var sources = toText(row.source_ids).split(';').filter(Boolean).join(' · ');
-        var codes = toText(row.source_ids).split(';').filter(Boolean);
+      var cardIndex = 0;
+      var cardHtml = function (row) {
+      var codes = toText(row.source_ids).split(';').filter(Boolean);
         var codeButtons = codes.length
           ? codes.map(function (code) {
-              return '<button class="source-jump source-jump--dark" type="button" data-action="jump-source" data-source-ids="' + escapeHtml(code) + '" title="在来源登记中定位 ' + escapeHtml(code) + '">' + escapeHtml(code) + '</button>';
+              return '<button class="source-jump" type="button" data-action="jump-source" data-source-ids="' + escapeHtml(code) + '" title="在来源登记中定位 ' + escapeHtml(code) + '">' + escapeHtml(code) + '</button>';
             }).join('<span class="code-sep"> · </span>')
           : '待补充';
         var excerpt = excerptAtSentence(row.legal_structure, 110);
-        return '<article class="system-card" data-matrix-index="' + index + '">' +
-          '<span class="dimension">' + codeButtons + '</span>' +
-          '<h3>' + escapeHtml(row.period || row.regime || '未标时期') + '</h3>' +
-          '<p><strong>制度：</strong>' + escapeHtml(excerpt) + '</p>' +
+        cardIndex += 1;
+        return '<article class="system-card" data-matrix-index="' + (cardIndex - 1) + '">' +
+          '<span class="era-no" aria-hidden="true">' + String(cardIndex).padStart(2, '0') + '</span>' +
+          '<h3>' + matrixTitleHtml(row.period || row.regime || '未标时期') + '</h3>' +
+          '<p>' + escapeHtml(excerpt) + '</p>' +
           '<details data-matrix-details><summary>展开全文</summary>' +
           '<p><strong>制度：</strong>' + escapeHtml(row.legal_structure || '') + '</p>' +
           '<p><strong>实际运行：</strong>' + escapeHtml(row.actual_operation || '') + '</p>' +
           '<p><strong>改革与风险：</strong>' + escapeHtml(row.reforms_risks || '') + '</p>' +
-          '<p><strong>来源：</strong>' + escapeHtml(sources || '待补充') + '</p>' +
+          '<p class="matrix-source-row"><strong>来源：</strong>' + (codes.length ? codeButtons : '待补充') + '</p>' +
           '</details>' +
         '</article>';
-      }).join('');
+      };
+      var placed = {};
+      var html = '';
+      ERA_GROUPS.forEach(function (group) {
+        var groupRows = visible.filter(function (row) {
+          var period = toText(row.period);
+          var hit = group.periods.some(function (term) { return period.indexOf(term) >= 0; });
+          if (hit) placed[period + row.legal_structure] = true;
+          return hit;
+        });
+        if (!groupRows.length) return;
+        html += '<section class="era-group"><div class="era-axis" aria-hidden="true"><i></i><span>' + escapeHtml(group.label) + '</span></div>' +
+          '<div class="system-grid">' + groupRows.map(cardHtml).join('') + '</div></section>';
+      });
+      var leftovers = visible.filter(function (row) { return !placed[toText(row.period) + row.legal_structure]; });
+      if (leftovers.length) {
+        html += '<section class="era-group"><div class="era-axis" aria-hidden="true"><i></i><span>其他</span></div>' +
+          '<div class="system-grid">' + leftovers.map(cardHtml).join('') + '</div></section>';
+      }
       if (rows.length > visible.length) {
         html += '<div class="load-more-row"><button class="load-more" type="button" data-action="load-more-matrix">显示更多 · 还有 ' + (rows.length - visible.length) + ' 条</button></div>';
       }
@@ -683,8 +735,10 @@
 
   function getFilteredSources() {
     var query = normalize(state.sourceQuery);
-    if (!query) return state.sources;
+    var grade = state.sourceGrade || '';
     return state.sources.filter(function (source) {
+      if (grade && toText(source.authority_grade).charAt(0).toUpperCase() !== grade) return false;
+      if (!query) return true;
       return normalize(Object.keys(source).map(function (key) { return source[key]; }).join(' ')).indexOf(query) >= 0;
     });
   }
@@ -700,7 +754,7 @@
       var visible = rows.slice(0, state.sourceLimit);
       var html = visible.map(function (source, index) {
         var grade = toText(source.authority_grade || source.evidence_level || '?');
-        var meta = [source.author_or_institution, source.year, source.coverage || source.notes].filter(Boolean).join(' · ');
+        var meta = [cleanInstitution(source.author_or_institution), source.year].filter(Boolean).join(' · ');
         var titleHtml = source.url
           ? '<a class="source-title-link" href="' + escapeHtml(source.url) + '" target="_blank" rel="noreferrer">' + escapeHtml(source.title || source.source_id) + '</a>'
           : '<strong>' + escapeHtml(source.title || source.source_id) + '</strong>';
@@ -719,6 +773,13 @@
     });
   }
 
+  function cleanInstitution(name) {
+    var text = toText(name).trim();
+    var m = text.match(/^([^（(]+)[（(]\s*([^）)]*)\s*[）)]$/);
+    if (m && m[1].replace(/\s/g, '') === m[2].replace(/\s/g, '')) return m[1];
+    return text;
+  }
+
   function updateGradeStats() {
     var counts = {};
     state.sources.forEach(function (source) {
@@ -728,8 +789,21 @@
     var box = first(['[data-grade-stats]']);
     if (!box) return;
     box.innerHTML = ['A', 'B', 'C', 'D'].map(function (grade) {
-      if (!counts[grade]) return '';
-      return '<p class="grade-stat"><span class="evidence-label evidence-' + grade.toLowerCase() + '">' + grade + '</span><span>' + counts[grade] + ' 条登记 · 主分级</span></p>';
+      var n = counts[grade] || 0;
+      var bar = n
+        ? '<span class="stat-bar"><i style="width:' + Math.round(n / Math.max(1, state.sources.length) * 100) + '%"></i></span>'
+        : '<span class="stat-bar is-zero"></span>';
+      return '<p class="grade-stat"><span class="evidence-label evidence-' + grade.toLowerCase() + '">' + grade + '</span>' + bar + '<span>' + n + ' 条</span></p>';
+    }).join('') + '<p class="grade-footnote">按来源的主分级计；点击上方字母可按等级筛选。</p>';
+  }
+
+  var PRESET_ORDER = ['省财政厅厅长', '外卖骑手', '小学教师', '银行客户经理', '农民', '网络主播'];
+
+  function renderPresets() {
+    var box = first(['[data-role="query-presets"]']);
+    if (!box || !state.examples.length) return;
+    box.innerHTML = PRESET_ORDER.map(function (label) {
+      return '<button type="button" data-query="' + escapeHtml(label) + '">' + escapeHtml(label) + '</button>';
     }).join('');
   }
 
@@ -737,6 +811,7 @@
     var periods = {};
     state.matrix.forEach(function (row) { periods[toText(row.period)] = 1; });
     state.matrixTotalUnique = uniqueByContent(state.matrix).length;
+    setText(findAll(['[data-count="examples"]']), String(state.examples.length));
     setText(findAll(['[data-count="periods"]']), String(Object.keys(periods).length));
     setText(findAll(['[data-count="sources"]']), String(state.sources.length));
     var letters = {};
@@ -925,6 +1000,14 @@
         renderSources();
       });
     });
+    findAll(['[data-role="grade-filter"] .grade-chip']).forEach(function (chip) {
+      chip.addEventListener('click', function () {
+        findAll(['[data-role="grade-filter"] .grade-chip']).forEach(function (item) { item.classList.toggle('is-on', item === chip); });
+        state.sourceGrade = chip.getAttribute('data-grade') || '';
+        state.sourceLimit = 10;
+        renderSources();
+      });
+    });
     findAll(['[data-role="period-tabs"] button[data-period]']).forEach(function (button) {
       button.addEventListener('click', function () {
         var isAll = button.getAttribute('data-period') === 'all';
@@ -972,6 +1055,16 @@
       renderMatrix();
       renderSources();
       updateCounts();
+      renderPresets();
+      var deepQuery = global.location ? (new URLSearchParams(global.location.search)).get('q') : null;
+      if (deepQuery) {
+        var input = first(['[data-role-input]', '[data-match-input]', 'input[name="role"]']);
+        if (input) input.value = deepQuery;
+        runMatch(deepQuery);
+        if (global.location.search.indexOf('layoutprobe') >= 0) {
+          global.document.title = 'QPROBE ' + state.candidates.map(function (c) { return c.ancient_candidate; }).join('|');
+        }
+      }
       return state;
     }).catch(function (error) {
       state.loading = false;
@@ -983,6 +1076,36 @@
       renderSources();
       return state;
     });
+  }
+
+  function initNavScrollSpy() {
+    var items = findAll(['[data-nav-item]']);
+    if (!items.length || !global.document) return;
+    var entries = [];
+    items.forEach(function (item) {
+      var href = item.getAttribute('href') || '';
+      if (href.charAt(0) !== '#') return;
+      var section = global.document.querySelector(href);
+      if (section) entries.push({ id: href, item: item, section: section });
+    });
+    if (!entries.length) return;
+    var queued = false;
+    function update() {
+      queued = false;
+      var header = global.document.querySelector('.site-header');
+      var line = (header ? header.getBoundingClientRect().bottom : 0) + 100;
+      var current = entries[0];
+      entries.forEach(function (entry) {
+        if (entry.section.getBoundingClientRect().top <= line) current = entry;
+      });
+      items.forEach(function (item) {
+        item.classList.toggle('is-active', item === current.item);
+      });
+    }
+    global.addEventListener('scroll', function () {
+      if (!queued) { queued = true; global.requestAnimationFrame(update); }
+    }, { passive: true });
+    update();
   }
 
   function init() {
@@ -1006,6 +1129,7 @@
       });
     }
     bindEvents();
+    initNavScrollSpy();
     renderLoading();
     renderMatch();
     renderMatrix();
