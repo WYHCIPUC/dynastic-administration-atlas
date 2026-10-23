@@ -27,6 +27,7 @@ export type MatchResult = ExampleCandidate & {
   matched_domains: string[];
   matched_levels: string[];
   score: number;
+  exact: boolean;
 };
 
 function normalize(value: string) {
@@ -51,17 +52,22 @@ function candidateText(candidate: ExampleCandidate) {
   ].join(' '));
 }
 
-function score(query: string, modernInput: string, candidate: ExampleCandidate): MatchResult {
+function score(query: string, modernInput: string, aliases: string[], candidate: ExampleCandidate): MatchResult {
   const queryDomains = new Set(detect(query, domains));
   const queryLevels = new Set(detect(query, levels));
-  const text = `${normalize(modernInput)} ${candidateText(candidate)}`;
+  const text = `${normalize(modernInput)} ${aliases.map(normalize).join(' ')} ${candidateText(candidate)}`;
   const candidateDomains = new Set(detect(text, domains));
   const candidateLevels = new Set(detect(text, levels));
   const domainHits = [...queryDomains].filter((domain) => candidateDomains.has(domain));
   const levelHits = [...queryLevels].filter((level) => candidateLevels.has(level));
-  const lexical = normalize(modernInput) === normalize(query) ? 1 : Math.min(1, normalize(query).length / Math.max(normalize(modernInput).length, 1));
-  const domainScore = queryDomains.size ? domainHits.length / queryDomains.size : lexical;
-  const levelScore = queryLevels.size ? levelHits.length / queryLevels.size : 0.5;
+  const nq = normalize(query);
+  const exactHit = normalize(modernInput) === nq || aliases.some((alias) => {
+    const na = normalize(alias);
+    return na === nq || (na.length >= 3 && nq.includes(na)) || (nq.length >= 3 && na.includes(nq));
+  });
+  const lexical = exactHit ? 1 : Math.min(0.99, nq.length / Math.max(normalize(modernInput).length, 1));
+  // 精确命中（原词或别名）时域匹配视为满格，保证同义检索优先于跨域联想。
+  const domainScore = exactHit ? 1 : (queryDomains.size ? domainHits.length / queryDomains.size : lexical);  const levelScore = queryLevels.size ? levelHits.length / queryLevels.size : 0.5;
   const baseScore = Math.max(0, Math.min(1, Number(candidate.similarity) || 0));
   const authorityScore = (candidateDomains.size ? domainHits.length / candidateDomains.size : lexical) * 0.55 + baseScore * 0.45;
   const scopeScore = levelScore;
@@ -75,6 +81,7 @@ function score(query: string, modernInput: string, candidate: ExampleCandidate):
     matched_domains: domainHits,
     matched_levels: levelHits,
     score: Number(resultScore.toFixed(3)),
+    exact: exactHit,
   };
 }
 
@@ -97,10 +104,13 @@ export function inferScenario(query: string) {
 export async function matchRole(query: string, limit = 3) {
   const examples = await loadExamples();
   const candidates = examples.flatMap((example: MappingExample) => [
-    score(query, example.modern_input, example.primary),
-    ...example.alternatives.map((candidate) => score(query, example.modern_input, candidate)),
+    { ...score(query, example.modern_input, example.aliases ?? [], example.primary), isPrimary: true },
+    ...example.alternatives.map((candidate) => ({ ...score(query, example.modern_input, example.aliases ?? [], candidate), isPrimary: false })),
   ]);
-  const results = candidates.sort((a, b) => b.score - a.score).slice(0, limit);
+  const results = candidates
+    .sort((a, b) => (b.exact ? 1 : 0) - (a.exact ? 1 : 0) || (a.exact ? (b.isPrimary ? 1 : 0) - (a.isPrimary ? 1 : 0) : 0) || b.score - a.score || b.similarity - a.similarity)
+    .slice(0, limit)
+    .map(({ isPrimary, ...rest }) => rest);
   return {
     query,
     inferredScenario: inferScenario(query),

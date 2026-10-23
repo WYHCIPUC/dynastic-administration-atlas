@@ -18,6 +18,7 @@ export type ExampleCandidate = {
 
 export type MappingExample = {
   modern_input: string;
+  aliases?: string[];
   primary: ExampleCandidate;
   alternatives: ExampleCandidate[];
 };
