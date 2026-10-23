@@ -17,3 +17,19 @@ dist/
 *.log
 Thumbs.db
 .DS_Store
+
+# Python 缓存
+__pycache__/
+*.pyc
+
+# 数据扩容工作区（管线草稿，不入库）
+data-staging/
+
+# 设计评审迭代产物（截图与探针脚本，体积大；文字交付记录见 docs/design-records/）
+design-records/round*/
+design-records/expand*/
+design-records/baseline/
+design-records/probe_*.py
+design-records/verify_*.py
+design-records/reshoot_*.py
+design-records/check_dollar.py
