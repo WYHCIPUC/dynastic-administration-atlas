@@ -3,15 +3,15 @@ services:
     image: postgres:16-alpine
     restart: unless-stopped
     environment:
-      POSTGRES_USER: atlas
-      POSTGRES_PASSWORD: atlas
-      POSTGRES_DB: atlas
+      POSTGRES_USER: ${POSTGRES_USER:-atlas}
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD:?必须设置 POSTGRES_PASSWORD（数据库密码），禁止使用默认弱口令}
+      POSTGRES_DB: ${POSTGRES_DB:-atlas}
     ports:
-      - "5432:5432"
+      - "127.0.0.1:5432:5432"
     volumes:
       - atlas_pgdata:/var/lib/postgresql/data
     healthcheck:
-      test: ["CMD-SHELL", "pg_isready -U atlas -d atlas"]
+      test: ["CMD-SHELL", "pg_isready -U $${POSTGRES_USER} -d $${POSTGRES_DB}"]
       interval: 5s
       timeout: 5s
       retries: 10
@@ -19,10 +19,10 @@ services:
     build:
       context: ./web
     environment:
-      DATABASE_URL: postgresql://atlas:atlas@db:5432/atlas?schema=public
-      ADMIN_EMAIL: ${ADMIN_EMAIL:-admin@example.com}
-      ADMIN_PASSWORD_HASH: ${ADMIN_PASSWORD_HASH:-}
-      ADMIN_SESSION_SECRET: ${ADMIN_SESSION_SECRET:-change-this-session-secret}
+      DATABASE_URL: postgresql://${POSTGRES_USER:-atlas}:${POSTGRES_PASSWORD}@db:5432/${POSTGRES_DB:-atlas}?schema=public
+      ADMIN_EMAIL: ${ADMIN_EMAIL:?必须设置 ADMIN_EMAIL（管理员登录邮箱）}
+      ADMIN_PASSWORD_HASH: ${ADMIN_PASSWORD_HASH:?必须设置 ADMIN_PASSWORD_HASH（管理员密码的 argon2id 哈希）}
+      ADMIN_SESSION_SECRET: ${ADMIN_SESSION_SECRET:?必须设置 ADMIN_SESSION_SECRET（随机长会话密钥）}
       AI_EXPLAINER_ENABLED: "false"
       EMBEDDING_ENABLED: "false"
     ports:
@@ -37,7 +37,7 @@ services:
       context: ./web
       target: tools
     environment:
-      DATABASE_URL: postgresql://atlas:atlas@db:5432/atlas?schema=public
+      DATABASE_URL: postgresql://${POSTGRES_USER:-atlas}:${POSTGRES_PASSWORD}@db:5432/${POSTGRES_DB:-atlas}?schema=public
     command: ["sh", "-c", "npx prisma migrate deploy && npm run content:import"]
     depends_on:
       db:
