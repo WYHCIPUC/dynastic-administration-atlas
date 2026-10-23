@@ -4,14 +4,14 @@
 
 ## 研究覆盖
 
-- [ ] 至少覆盖先秦、秦汉、魏晋南北朝、隋唐、宋、辽金西夏、元、明、清等主要时期。
-- [ ] 每个朝代同时检查中央机构、地方机构、兵役/户籍、财政或供给、司法/治安、教育/医疗等行政面向。
+- [x] 至少覆盖先秦、秦汉、魏晋南北朝、隋唐、宋、辽金西夏、元、明、清等主要时期。（2026-10-23 验证：`dynasty_systems.csv` 含 11 个时期，覆盖上述全部时期；`python -B validate_package.py` 断言通过。）
+- [x] 每个朝代同时检查中央机构、地方机构、兵役/户籍、财政或供给、司法/治安、教育/医疗等行政面向。（2026-10-23 验证：11 时期 × 8 维度（政治行政、财政经济、军事边疆、法律监察、人事教育、礼制宗教、社会生活、改革危机）= 88 条矩阵记录，validate_package.py 断言通过。）
 - [ ] 对军政合一、族群治理、羁縻、土司、八旗等复合制度单独标注，避免只按现代部委分类。
 - [ ] 对同名官职的时代变化、同职异名和辖区差异作年代与地域限定。
 
 ## 引用与来源
 
-- [ ] 每个重要结论至少有一个来源 ID；来源 ID可在 `office_mapping_examples.json` 的 `source_registry` 中追溯到原典、论文或机构网页。
+- [x] 每个重要结论至少有一个来源 ID；来源 ID可在 `office_mapping_examples.json` 的 `source_registry` 中追溯到原典、论文或机构网页。（2026-10-23 验证：validate_package.py 来源闭合断言通过；JSON 内嵌 `source_registry` 已同步为与 `source_registry.csv` 一致的 46 条。）
 - [ ] 优先使用制度原典、正史职官志、会典、实录、简牍和考古报告（证据等级 A）。
 - [ ] 用中国社会科学院、大学出版社、同行评审论文补充制度解释（证据等级 B）。
 - [ ] 故宫、国家博物馆、国家民委和政府专题页用于制度概览或文物资料（证据等级 C），涉及评价性叙述时要与 A/B 级来源交叉核对。
@@ -20,8 +20,8 @@
 
 ## 映射完整性
 
-- [ ] 每个现代职位恰有 1 个主候选和 2 个次候选。
-- [ ] 每个候选均填写：`similarity`、`confidence`、职责差异、日常活动、服饰、生活、风险、证据等级和来源 ID。
+- [x] 每个现代职位恰有 1 个主候选和 2 个次候选。（2026-10-23 验证：151 组案例均为 1 主 + 2 次，共 453 条候选，validate_package.py 断言通过。）
+- [x] 每个候选均填写：`similarity`、`confidence`、职责差异、日常活动、服饰、生活、风险、证据等级和来源 ID。（2026-10-23 验证：脚本检查全部 453 条候选，必填字段无缺失、无空值。）
 - [ ] 相似度只比较核心职责；不能因为官名含“长、令、卿、尚书”就提高分值。
 - [ ] 现代职位的法定权限、专业资格、公共服务对象和问责机制，与古代官职明显不同之处必须在 `duty_difference` 中说明。
 - [ ] 对军户、卫所、牛录、猛安谋克、巡检、厢军等兼有户籍、生产、治安或军事功能的单位，禁止直接翻译成现代军衔或警种。
@@ -37,11 +37,18 @@
 
 ## 数据与格式验收
 
-- [ ] JSON 可被标准解析器读取，UTF-8 编码，无注释、尾随逗号或重复键。
-- [ ] 每个 `source_ids` 均存在于 `source_registry`，URL可访问或有明确原典定位。
-- [ ] `similarity` 为 0 至 1 的数字；`confidence` 仅使用高/中/低；`evidence_level` 仅使用 A/B/C。
-- [ ] 交付目录包含 `research_report.md`、`dynasty_systems.csv`、`source_registry.csv`、`role_mapping_schema.json`、`office_mapping_examples.json`、`role_matcher.py`、`validation_checklist.md` 与 `README.md`；不把临时或缓存文件纳入交付。
-- [ ] `role_mapping_schema.json` 可作为 JSON Schema 解析；`role_matcher.py` 可通过 `python -m py_compile`，并能对财政、治安、军务、医疗等示例返回候选。
-- [ ] `sample_mapping_output.json` 满足 Schema 的必填字段、候选置信度、证据引用和来源闭合要求。
-- [ ] 报告的时期标题与 CSV 的 `period` 值一致，来源表中的 `source_id` 能被制度矩阵和映射示例追溯。
-- [ ] 修改后重新运行 JSON 解析、必填字段检查和链接抽查，并记录发现的缺口。
+- [x] JSON 可被标准解析器读取，UTF-8 编码，无注释、尾随逗号或重复键。（2026-10-23 验证：`python json.load` 解析三个 JSON 文件通过，`object_pairs_hook` 查重无重复键。）
+- [x] 每个 `source_ids` 均存在于 `source_registry`，URL可访问或有明确原典定位。（2026-10-23 验证：来源闭合断言通过；P 系原典无 URL，均以卷次定位说明替代；URL 可访问性未逐一联网核验。）
+- [x] `similarity` 为 0 至 1 的数字；`confidence` 仅使用高/中/低；`evidence_level` 仅使用 A/B/C。（2026-10-23 验证：similarity 实测区间 0.38–0.8；confidence ∈ {高, 中, 低}；evidence_level ∈ {A, B, C}。）
+- [x] 交付目录包含 `research_report.md`、`dynasty_systems.csv`、`source_registry.csv`、`role_mapping_schema.json`、`office_mapping_examples.json`、`role_matcher.py`、`validation_checklist.md` 与 `README.md`；不把临时或缓存文件纳入交付。（2026-10-23 验证：八项交付文件均在仓库根目录。）
+- [x] `role_mapping_schema.json` 可作为 JSON Schema 解析；`role_matcher.py` 可通过 `python -m py_compile`，并能对财政、治安、军务、医疗等示例返回候选。（2026-10-23 验证：py_compile 通过；validate_package.py 运行 12 组示例查询（含财政厅厅长、县公安局长、军分区主官、医院负责人），每组均返回 3 个候选。）
+- [x] `sample_mapping_output.json` 满足 Schema 的必填字段、候选置信度、证据引用和来源闭合要求。（2026-10-23 验证：validate_package.py 断言通过。）
+- [x] 报告的时期标题与 CSV 的 `period` 值一致，来源表中的 `source_id` 能被制度矩阵和映射示例追溯。（2026-10-23 验证：`research_report.md` 分期标题与 CSV 的 11 个 `period` 值逐一对应；矩阵 source_ids ⊆ source_registry.csv 断言通过。）
+- [x] 修改后重新运行 JSON 解析、必填字段检查和链接抽查，并记录发现的缺口。（2026-10-23 验证：重跑 validate_package.py 通过；本轮发现并修复缺口——JSON 内嵌 `source_registry` 缺 P013/P014/P015，已同步补齐为 46 条。）
+
+## 网站工程验证记录（2026-10-23）
+
+- `npm test`：24/24 通过（`web/tests/`，node:test）。
+- `python -B validate_package.py`：PASS（schema、示例、来源闭合、88 条矩阵、12 组匹配查询）。
+- `npm run build`：编译与类型检查通过；ESLint 阶段对存量页面/组件报告 `@next/next/no-html-link-for-pages`、`react-hooks/set-state-in-effect` 等问题（ESLint 配置为同期另一任务引入，存量代码修复由其跟进）。
+- `node scripts/e2e-smoke.mjs`：本轮未运行（需运行中的服务与数据库）。

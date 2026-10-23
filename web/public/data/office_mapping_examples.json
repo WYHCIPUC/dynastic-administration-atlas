@@ -307,6 +307,27 @@
       "url": "",
       "evidence_level": "A",
       "use": "Qing central, local and frontier institutions"
+    },
+    "P013": {
+      "title": "Sanguozhi / Records of the Three Kingdoms",
+      "institution": "Chen Shou",
+      "url": "",
+      "evidence_level": "B",
+      "use": "Wei-Shu-Wu offices and nine-rank selection"
+    },
+    "P014": {
+      "title": "Jin shu / Book of Jin",
+      "institution": "Tang court",
+      "url": "",
+      "evidence_level": "B",
+      "use": "Jin offices, geography, penal code and qiaozhou commanderies"
+    },
+    "P015": {
+      "title": "Wei shu / Book of Wei",
+      "institution": "Wei Shou",
+      "url": "",
+      "evidence_level": "B",
+      "use": "Northern Wei officials, equal-field, three-elders and Buddhism"
     }
   },
   "examples": [

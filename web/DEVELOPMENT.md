@@ -17,18 +17,18 @@ npm run dev
 
 ## 数据流
 
-`public/data/` 保存研究底稿的 CSV/JSON 副本。`src/lib/content.ts` 负责读取和解析，`src/lib/matcher.ts` 负责可审计的关键词、职能和层级匹配。生产匹配不依赖 AI；`AI_EXPLAINER_ENABLED` 和 `EMBEDDING_ENABLED` 默认关闭。
+`public/data/` 保存研究底稿的 CSV/JSON 副本（`office_mapping_examples.json`、`dynasty_systems.csv`、`source_registry.csv` 等），有两个用途：一是 `npm run content:import` 的内容导入源，导入后写入 Prisma 并置为 `PUBLISHED`；二是规则匹配的语料，`src/lib/content.ts` 负责读取和解析，`src/lib/matcher.ts` 基于案例库做可审计的关键词、职能和层级匹配。公开页面与公开 API 只读取 Prisma 中 `status = PUBLISHED` 的内容（`src/lib/published-content.ts`）。生产匹配不依赖 AI；`AI_EXPLAINER_ENABLED` 和 `EMBEDDING_ENABLED` 默认关闭。
 
 匹配分数保留在规则层，输出三个候选及相似度、置信度、差异、生活百科、证据等级和来源 ID。数据库可用时结果写入 `MatchQuery`，否则使用 24 小时内存回退，因此公开匹配在未连接数据库时仍可用。
 
 ## 页面与接口
 
 - 公共页面：`/`、`/match`、`/match/:queryId`、`/periods`、`/periods/:periodSlug`、`/offices/:officeSlug`、`/sources`、`/about`。
-- 管理页面：`/admin/login`、`/admin`，以及时期、官职、生活、来源、主张和版本资源页。
+- 管理页面：`/admin/login`；`/admin` 仪表盘（各类内容状态分布）；时期、官职页（列表 + 创建表单 + 状态操作）；来源、主张、生活页（只读列表）；版本页（审计快照查看器）。
 - 公开接口：`POST /api/matching/preview`、`GET /api/matching/:queryId`、`GET /api/periods`、`GET /api/periods/:slug`、`GET /api/offices/:slug`、`GET /api/sources`、`GET /api/health`。
 - 管理接口：时期、官职、来源、主张的创建/编辑接口，以及统一的 `submit-review`、`publish`、`archive`、`rollback` 状态接口。只读查询接口：`GET /api/admin/{periods|offices|sources|claims|lifestyle}` 列表（`limit`/`offset` 分页并返回 `total`）、`GET /api/admin/audit` 审计日志（最新在前）、`GET /api/admin/overview` 各类内容状态分布计数。
 
-管理登录使用 Argon2id 哈希；会话为 HttpOnly、Secure（生产环境）Cookie；写操作要求 CSRF Token（GET/HEAD 只读请求仅校验会话、豁免 CSRF），并写入 `AdminAuditLog`。内容状态严格使用 `DRAFT → REVIEW → PUBLISHED → ARCHIVED`，公开研究端只读取已发布数据。
+管理登录使用 argon2id 哈希校验密码，登录接口按 IP 限流 10 次/分钟；会话为 HMAC 签名、8 小时有效的 HttpOnly Cookie（生产环境加 Secure），`verifySession` 比对 `ADMIN_EMAIL`。生产启动时（`src/instrumentation.ts`）强制校验 `ADMIN_SESSION_SECRET`/`ADMIN_EMAIL`/`ADMIN_PASSWORD_HASH`，缺失或仍为已知开发默认值即拒绝启动。写操作要求 CSRF Token（"随机值.HMAC 签名"令牌 + 双提交校验；GET/HEAD 只读请求仅校验会话、豁免 CSRF），并写入 `AdminAuditLog`。内容状态严格使用 `DRAFT → REVIEW → PUBLISHED → ARCHIVED`（非法流转返回 409，变更事务化并留存审计快照，`rollback` 按完整快照回滚），公开研究端只读取已发布数据。
 
 ## 内容导入
 
@@ -38,15 +38,18 @@ npm run db:seed
 npm run content:import
 ```
 
-导入脚本保留来源 ID，并将无法匹配的制度/官职数据留在导入日志中。任何生活细节应在后台补充不确定性类型：直接史料、学术解释、情景重建或存在争议。
+导入脚本保留来源 ID，导入完成后内容状态置为 `PUBLISHED`，并将无法匹配的制度/官职数据留在导入日志中。任何生活细节应在后台补充不确定性类型：直接史料、学术解释、情景重建或存在争议。
 
 ## 验证
 
 ```powershell
-npm run lint
-npm test
-npm run build
+npm run lint        # ESLint
+npm run typecheck   # TypeScript 类型检查
+npm test            # 单元测试（24 例）
+npm run build       # 生产构建
 $env:DATABASE_URL='postgresql://atlas:atlas@localhost:5432/atlas?schema=public'; npx prisma validate
 ```
 
-根目录 `validate_package.py` 继续验证研究底稿的 Schema、来源闭合、11 个时期的 88 条矩阵记录和 8 组职位案例。
+端到端冒烟 `node scripts/e2e-smoke.mjs` 覆盖公开读取、安全负路径与发布闭环共 19 项断言（需运行中的服务与数据库）。CI 分 web（lint/typecheck/test/build）、python（底稿校验）、e2e 三个 job。
+
+根目录 `validate_package.py` 继续验证研究底稿的 Schema、来源闭合、11 个时期的 88 条矩阵记录、151 组职位案例（453 条候选）和 46 条来源登记，并运行 12 组示例查询。
