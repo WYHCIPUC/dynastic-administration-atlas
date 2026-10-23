@@ -1,7 +1,7 @@
 import test from 'node:test';
 import assert from 'node:assert/strict';
 import { createHmac } from 'node:crypto';
-import { createCsrfToken, createSession, verifyCsrfToken, verifySession } from '../src/lib/admin-auth';
+import { checkCsrf, createCsrfToken, createSession, verifyCsrfToken, verifySession } from '../src/lib/admin-auth';
 import { requireSessionSecret, validateAdminEnv } from '../src/lib/env';
 
 const SECRET = 'unit-test-secret-0123456789abcdef';
@@ -135,6 +135,44 @@ test('CSRF 令牌 base64 解码后不包含会话密钥', () => {
     assert.ok(!Buffer.from(random, 'base64url').toString('utf8').includes(SECRET));
     assert.ok(!Buffer.from(mac, 'base64url').toString('utf8').includes(SECRET));
     assert.ok(!token.includes(SECRET));
+  } finally {
+    restore();
+  }
+});
+
+test('GET/HEAD 只读请求豁免 CSRF 校验', () => {
+  const restore = setEnv({ ADMIN_SESSION_SECRET: SECRET });
+  try {
+    assert.equal(checkCsrf('GET', undefined, undefined), true);
+    assert.equal(checkCsrf('HEAD', undefined, undefined), true);
+    assert.equal(checkCsrf('get', undefined, undefined), true);
+  } finally {
+    restore();
+  }
+});
+
+test('写方法缺少或伪造 CSRF 时被拒绝', () => {
+  const restore = setEnv({ ADMIN_SESSION_SECRET: SECRET });
+  try {
+    for (const method of ['POST', 'PATCH', 'PUT', 'DELETE']) {
+      assert.equal(checkCsrf(method, undefined, undefined), false, `${method} 无令牌`);
+      const token = createCsrfToken();
+      assert.equal(checkCsrf(method, token, undefined), false, `${method} 缺请求头`);
+      assert.equal(checkCsrf(method, token, `${token}x`), false, `${method} 令牌不符`);
+      const other = createCsrfToken();
+      assert.equal(checkCsrf(method, token, other), false, `${method} 令牌不匹配`);
+    }
+  } finally {
+    restore();
+  }
+});
+
+test('写方法携带匹配 CSRF 令牌时放行', () => {
+  const restore = setEnv({ ADMIN_SESSION_SECRET: SECRET });
+  try {
+    const token = createCsrfToken();
+    assert.equal(checkCsrf('POST', token, token), true);
+    assert.equal(checkCsrf('patch', token, token), true);
   } finally {
     restore();
   }

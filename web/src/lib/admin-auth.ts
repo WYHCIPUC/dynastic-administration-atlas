@@ -59,6 +59,13 @@ export function verifyCsrfToken(token: string | undefined) {
   return safeEqual(mac, expected);
 }
 
+export function checkCsrf(method: string, cookieToken: string | undefined, headerToken: string | undefined) {
+  const safe = method.toUpperCase();
+  if (safe === 'GET' || safe === 'HEAD') return true;
+  if (!cookieToken || !headerToken) return false;
+  return verifyCsrfToken(cookieToken) && safeEqual(cookieToken, headerToken);
+}
+
 export async function requireAdmin(request: Request) {
   let secretConfigured = true;
   try {
@@ -72,7 +79,7 @@ export async function requireAdmin(request: Request) {
   if (!session) return { error: Response.json({ error: '需要管理员登录' }, { status: 401 }) } as const;
   const csrf = cookieStore.get(CSRF_COOKIE_NAME)?.value;
   const header = request.headers.get('x-csrf-token');
-  if (!csrf || !header || !verifyCsrfToken(csrf) || !safeEqual(csrf, header)) {
+  if (!checkCsrf(request.method, csrf, header ?? undefined)) {
     return { error: Response.json({ error: 'CSRF 校验失败' }, { status: 403 }) } as const;
   }
   return { session } as const;
