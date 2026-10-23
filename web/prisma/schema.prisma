@@ -30,8 +30,10 @@ model Period {
   endYear        Int?
   regimeGroup    String
   summary        String
+  sortOrder      Int             @default(0)
   status         ContentStatus   @default(DRAFT)
   offices        Office[]
+  matrixEntries  MatrixEntry[]
   claims         EvidenceClaim[]
   createdAt      DateTime        @default(now())
   updatedAt      DateTime        @updatedAt
@@ -50,6 +52,12 @@ model Office {
   appointmentAndCareer Json
   rankOrGrade           String?
   rankComparability     String
+  modernInput           String?
+  candidateIndex        Int?
+  similarity            Float?
+  confidence            String?
+  evidenceLevel         String?
+  sourceIds             Json?
   status                ContentStatus      @default(DRAFT)
   periodId              String
   period                Period             @relation(fields: [periodId], references: [id], onDelete: Cascade)
@@ -81,6 +89,25 @@ model LifestyleProfile {
   status                ContentStatus @default(DRAFT)
   createdAt             DateTime @default(now())
   updatedAt             DateTime @updatedAt
+}
+
+model MatrixEntry {
+  id              String        @id @default(cuid())
+  periodId        String
+  period          Period        @relation(fields: [periodId], references: [id], onDelete: Cascade)
+  dimension       String
+  legalStructure  String
+  actualOperation String
+  reformsRisks    String
+  evidenceGrade   String
+  sourceIds       Json
+  notes           String?
+  sortOrder       Int           @default(0)
+  status          ContentStatus @default(DRAFT)
+  createdAt       DateTime      @default(now())
+  updatedAt       DateTime      @updatedAt
+  @@unique([periodId, dimension])
+  @@index([periodId, status])
 }
 
 model Source {
