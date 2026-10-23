@@ -1,0 +1,49 @@
+name: 发布静态站到 GitHub Pages
+
+# 根目录零依赖静态站（index.html + app.js + styles.css）的 Pages 发布。
+# 数据文件清单与 app.js 的 fetchFirst 路径保持一致（office_mapping_examples.json /
+# dynasty_systems.csv / source_registry.csv，index.html 同目录相对引用）。
+# 注意：仓库当前为私有，Pages 不会真正发布；需仓库所有者将仓库转为公开后，
+# 在 Settings → Pages 将 Source 选为 "GitHub Actions"，此后本 workflow 自动生效。
+
+on:
+  push:
+    branches: [main]
+    paths:
+      - index.html
+      - app.js
+      - styles.css
+      - dynasty_systems.csv
+      - office_mapping_examples.json
+      - source_registry.csv
+      - .github/workflows/pages.yml
+  workflow_dispatch:
+
+permissions:
+  pages: write
+  id-token: write
+
+concurrency:
+  group: pages
+  cancel-in-progress: false
+
+jobs:
+  deploy:
+    environment:
+      name: github-pages
+      url: ${{ steps.deployment.outputs.page_url }}
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: 收集静态站文件（保持仓库根目录相对结构拷入 _site/）
+        run: |
+          mkdir -p _site
+          cp index.html app.js styles.css \
+             dynasty_systems.csv office_mapping_examples.json source_registry.csv \
+             _site/
+      - uses: actions/configure-pages@v5
+      - uses: actions/upload-pages-artifact@v3
+        with:
+          path: _site
+      - id: deployment
+        uses: actions/deploy-pages@v4

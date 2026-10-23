@@ -1,0 +1,92 @@
+name: CI
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+
+jobs:
+  web:
+    name: Web（lint / typecheck / test / build）
+    runs-on: ubuntu-latest
+    defaults:
+      run:
+        working-directory: web
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: npm
+          cache-dependency-path: web/package-lock.json
+      - run: npm ci
+      - run: npm run lint
+      - run: npm run typecheck
+      - run: npm test
+      # 刻意不设置 DATABASE_URL 等任何环境变量：构建必须在无数据库环境下通过（本地已验证）。
+      - run: npm run build
+
+  python:
+    name: 研究底稿校验（validate_package.py）
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+      # 仅依赖标准库（csv/json/re/argparse），无需安装第三方包。
+      - run: python validate_package.py
+
+  e2e:
+    name: 端到端冒烟（真实 Postgres + 生产构建）
+    runs-on: ubuntu-latest
+    services:
+      postgres:
+        image: postgres:16-alpine
+        env:
+          POSTGRES_USER: atlas
+          # 仅 CI 临时容器使用，job 结束随容器一并销毁，不对应任何真实环境。
+          POSTGRES_PASSWORD: atlas-ci-e2e
+          POSTGRES_DB: atlas
+        ports:
+          - 5432:5432
+        options: >-
+          --health-cmd "pg_isready -U atlas -d atlas"
+          --health-interval 10s
+          --health-timeout 5s
+          --health-retries 5
+    env:
+      DATABASE_URL: postgresql://atlas:atlas-ci-e2e@localhost:5432/atlas?schema=public
+      ADMIN_EMAIL: admin@example.com
+      # 仅 CI 临时使用：固定随机串仅用于本次 job 内的会话签名，随 job 销毁失效。
+      ADMIN_SESSION_SECRET: 9f2c7d4e1a6b48f0c3d5e7a91b2c4d6e8f0a1b3c5d7e9f1a2b4c6d8e0f1a2b3c
+    defaults:
+      run:
+        working-directory: web
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: npm
+          cache-dependency-path: web/package-lock.json
+      - run: npm ci
+      - name: 生成管理员明文密码与 argon2 哈希（仅本次 CI 运行有效）
+        run: |
+          PW="ci-e2e-$(openssl rand -hex 12)"
+          HASH="$(node -e "require('argon2').hash(process.argv[1]).then((h) => console.log(h))" "$PW")"
+          echo "E2E_ADMIN_PASSWORD=$PW" >> "$GITHUB_ENV"
+          echo "ADMIN_PASSWORD_HASH=$HASH" >> "$GITHUB_ENV"
+      - name: 数据库迁移与内容导入
+        run: |
+          npx prisma migrate deploy
+          npm run content:import
+      - run: npm run build
+      - name: 后台启动生产构建（standalone）
+        run: PORT=3100 nohup npm run start > server.log 2>&1 &
+      # e2e-smoke.mjs 自带最多 30s 的服务就绪等待（/api/health 轮询）。
+      - name: 端到端冒烟（公开读取 → 安全负路径 → 发布闭环）
+        run: BASE_URL=http://127.0.0.1:3100 node scripts/e2e-smoke.mjs
+      - name: 失败时输出服务日志
+        if: failure()
+        run: cat server.log
