@@ -23,7 +23,7 @@ def main() -> None:
     examples = load_json("office_mapping_examples.json")
     sample = load_json("sample_mapping_output.json")
 
-    assert len(examples["examples"]) == 8
+    assert len(examples["examples"]) >= 60
     assert all(len(item["alternatives"]) == 2 for item in examples["examples"])
     known_example_sources = set(examples["source_registry"])
     example_refs = {
@@ -65,6 +65,10 @@ def main() -> None:
         "省级教育部门负责人",
         "法院院长",
         "边疆事务负责人",
+        "小学教师",
+        "外卖骑手",
+        "银行客户经理",
+        "消防员",
     ]
     for query in queries:
         result = role_matcher.search(query, records, 3)
@@ -72,7 +76,7 @@ def main() -> None:
         assert all(0 <= item["similarity"] <= 1 for item in result)
         assert all(item["confidence"] in {"高", "中", "低"} for item in result)
 
-    print("PASS: schema, examples, source references, 88 matrix rows, and 8 matcher queries")
+    print("PASS: schema, examples, source references, 88 matrix rows, and 12 matcher queries")
 
 
 if __name__ == "__main__":

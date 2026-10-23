@@ -12,7 +12,7 @@
 - `office_mapping_examples.json`：典型现代职位的映射示例。
 - `validation_checklist.md`：覆盖率、证据、匹配和不确定性验收清单。
 - `role_matcher.py`：只使用 Python 标准库的规则化检索原型。
-- `validate_package.py`：一键验证 Schema、案例、来源闭合、矩阵覆盖和八类示例查询。
+- `validate_package.py`：一键验证 Schema、案例、来源闭合、矩阵覆盖和十二组示例查询。
 - `index.html` / `styles.css` / `app.js`：无需构建工具即可打开的静态公共站，支持职位匹配、制度矩阵和来源检索。
 - `web/`：Next.js + TypeScript + Prisma 全栈网站，包含公开页面、匹配 API、来源/制度 API、管理员会话和内容状态接口；`src/app/globals.css` 与 `src/components/PublicShell.tsx` 落地"制度档案馆"纸/墨/朱/金视觉基线。
 - `web/DEVELOPMENT.md`：网站架构、数据流、接口、内容发布和验证命令。
